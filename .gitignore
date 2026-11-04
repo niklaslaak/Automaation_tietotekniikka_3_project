@@ -1,0 +1,7 @@
+# Paikalliset salaisuudet
+.env
+.env.*
+!.env.example
+# Tilapäistiedostot
+*.tmp
+*.swp
