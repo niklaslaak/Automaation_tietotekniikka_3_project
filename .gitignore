@@ -5,3 +5,7 @@
 # Tilapäistiedostot
 *.tmp
 *.swp
+# Paikalliset testiriippuvuudet ja raportit
+node_modules/
+playwright-report/
+test-results/

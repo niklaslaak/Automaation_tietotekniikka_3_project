@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sähkönkäytön ajoitusoptimointi</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">SÄHKÖN KÄYTTÖ • ENSIMMÄINEN VERSIO</p>
+      <h1>Löydä edullisin käyttöaika.</h1>
+      <p class="intro">Tuo tuntihinnat, kerro laitteen teho ja käyttöaika. Laske halvin yhtenäinen jakso aineistostasi.</p>
+    </header>
+    <div class="layout">
+      <section class="card" aria-labelledby="settings-title">
+        <h2 id="settings-title">1. Hinnat ja laite</h2>
+        <form id="optimizer" novalidate>
+          <label for="prices">Hintatiedosto (CSV)</label>
+          <input id="prices" type="file" accept=".csv,text/csv" aria-describedby="file-help file-status">
+          <p id="file-help" class="hint">Valitse esimerkiksi projektin <strong>data/esimerkkihinnat.csv</strong>. Tiedosto käsitellään vain tässä selaimessa.</p>
+          <p id="file-status" role="status">Hintatiedostoa ei ole vielä ladattu.</p>
+          <div class="fields">
+            <div><label for="power">Laitteen teho (kW)</label><input id="power" type="text" inputmode="decimal" value="1" aria-describedby="power-help"><p id="power-help" class="hint">Esimerkiksi 1,5 kW = 1 500 W.</p></div>
+            <div><label for="duration">Käyttöaika (h)</label><input id="duration" type="text" inputmode="numeric" value="2" aria-describedby="duration-help"><p id="duration-help" class="hint">Kokonaisia tunteja, keskeytyksettä.</p></div>
+          </div>
+          <button id="calculate" type="submit" disabled>Etsi halvin jakso</button>
+          <p id="error" role="alert" hidden></p>
+        </form>
+      </section>
+      <section class="card result-card" aria-labelledby="result-title">
+        <h2 id="result-title">2. Suositeltu käyttöjakso</h2>
+        <div id="result-announcement" aria-live="polite" aria-atomic="true">
+          <p id="empty-result">Lataa hinnat ja laske suositus. Tulos ilmestyy tähän.</p>
+          <div id="result" hidden>
+            <p class="eyebrow">ENERGIAKUSTANNUS</p>
+            <p id="cost" class="cost"></p>
+            <dl>
+              <div><dt>Aloitus</dt><dd id="start"></dd></div>
+              <div><dt>Lopetus</dt><dd id="end"></dd></div>
+              <div><dt>Käyttöaika</dt><dd id="result-duration"></dd></div>
+              <div><dt>Teho</dt><dd id="result-power"></dd></div>
+              <div><dt>Energiankulutus</dt><dd id="energy"></dd></div>
+            </dl>
+            <p class="hint">Tasahintaisista jaksoista valitaan aikaisin. Hinnat voivat olla myös negatiivisia.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+    <section class="notes" aria-labelledby="notes-title">
+      <h2 id="notes-title">Mitä arvio sisältää?</h2>
+      <p>Laskenta olettaa, että laite käyttää samaa tehoa koko jakson ajan. Hinnat käytetään tiedostosta sellaisinaan: arvonlisäveroa, siirtoa, sähköveroa, marginaalia tai perusmaksuja ei lisätä. Tulos ei ole koko sähkölaskun arvio.</p>
+      <details><summary>Hintatiedoston muoto ja rajaukset</summary>
+        <p>UTF-8, puolipiste-erotin ja hinnan desimaalierottimena piste. Jokainen rivi alkaa tunnin alkamisajalla; tunnit ovat peräkkäisiä ja aikajärjestyksessä. Enintään 10 000 tuntia ja 1 Mt. Mukana tulevat hinnat ovat keksittyä testidataa.</p>
+        <pre>aika;hinta_snt_kwh
+2026-11-04T00:00;10
+2026-11-04T01:00;5</pre>
+        <p>Aineiston kellonajat näytetään sellaisinaan ilman aikavyöhykemuunnoksia. Varttihinnat ja kellonsiirtopäivät eivät kuulu tähän versioon. Tiedot poistuvat, kun sivu ladataan uudelleen.</p>
+      </details>
+    </section>
+    <footer>Automaation tietotekniikka 3 · Kurssiprojekti</footer>
+  </main>
+</body>
+</html>
