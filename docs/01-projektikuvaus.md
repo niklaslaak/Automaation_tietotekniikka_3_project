@@ -27,7 +27,7 @@ Prioriteetti P1 tarkoittaa vähimmäiskokonaisuuteen kuuluvaa toimintoa. P2 on l
 | V5 | Tulos esitetään selkeästi ja vastaa nykyisiä syötteitä. | Näytetään aloitus- ja lopetusaika päivämäärineen, kesto, teho, energiankulutus (kWh) ja kustannus (€). V4:n esimerkissä energiankulutus on 2 kWh. Syötteiden muuttaminen poistaa vanhan tuloksen, kunnes laskenta tehdään uudelleen. | P1 |
 | V6 | Käyttäjä näkee hinnat ja valitun jakson kuvaajassa. | Jokaiselle ladatulle tunnille näytetään hinta yksikössä snt/kWh, ja laskennan valitsema jakso erottuu kuvaajasta. Myös negatiiviset hinnat näkyvät oikein. | P2 |
 
-Nämä ovat suunniteltuja hyväksymiskriteereitä, eivät toteutuneita testituloksia. Todelliset kokeet ja havainnot kirjataan tiedostoon `docs/03-testaus-ja-validointi.md`.
+Hyväksymiskriteerit kuvaavat tavoiteltua toimintaa. Ensiversion automaattiset testitulokset ja vielä puuttuvat selainkokeet erotellaan testausdokumentissa. Todelliset kokeet ja havainnot kirjataan tiedostoon `docs/03-testaus-ja-validointi.md`.
 
 ## Rajaus ja vähimmäiskokonaisuus
 
@@ -101,3 +101,6 @@ aika;hinta_snt_kwh
 
 - **4.11.2026:** Aiemmin harkitusta sähkönkulutuksen analysoinnista siirryttiin sähkönkäytön ajoitusoptimointiin käyttäjän aihetoiveen perusteella. Painopiste on halvimman käyttöjakson löytämisessä.
 - **4.11.2026:** Ensimmäinen määrittely rajattiin yhden laitteen vakiotehoon, yhtenäiseen käyttöjaksoon ja itse tuotettuun tuntihintaiseen CSV-aineistoon. Näin laskenta voidaan toteuttaa ja todentaa ilman verkkopalvelua tai laitteistoa. Tämä on tekijöiden yhdessä tarkistettava ensimmäinen määrittelyluonnos.
+
+- **4.11.2026, ensimmäinen toteutus:** Tiedoston kooksi rajataan enintään 1 000 000 tavua ja aineistoksi 10 000 tuntia selaimen kuormituksen rajaamiseksi. Tuetut vuodet ovat 0001–9998. Nämä tekniset rajat näkyvät käyttöohjeessa. Laskentatestit lisätään `tests/optimizer.test.js`-tiedostoon ja käyttöliittymän tapahtumakäsittelyn testit `tests/ui.test.js`-tiedostoon; jälkimmäinen ei korvaa oikeaa selainkoetta.
+
