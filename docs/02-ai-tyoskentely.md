@@ -37,7 +37,7 @@ Ohjelmaversion tarkistuksessa agentti vertaa 1 kW:n ja kahden tunnin tulosta kä
 ## Työnjako ja kummankin konkreettinen osuus
 
 - **Niklas:** esitti aihetoiveen, loi ja julkaisi repon, lisäsi projektipohjan, pyysi AI:lta projektikuvauksen ja toteutuksen sekä yhdisti projektikuvauksen pull requestin #1. Keskustelussa hän vahvisti saaneensa muutokset näkyviin paikallisesti.
-- **Aatu:** konkreettista työpanosta ei ole vielä vahvistettu tässä keskustelussa. Täydennetään todellisen osallistumisen mukaan.
+- **Aatu:** toteutti hintakuvaajan, jossa jokainen ladattu tunti näkyy hintapylväänä ja laskennan valitsema käyttöjakso korostetaan. Negatiiviset hinnat näkyvät nollaviivan alapuolella.
 - **AI-agentti:** laati määrittelyluonnoksen sekä ensimmäisen ohjelmaversion ja sen testit. Koodia ei kirjata opiskelijoiden käsin kirjoittamaksi.
 - **Sovittava seuraavaksi:** ensimmäisen koodimuutoksen katselmoija ja kummankin omat kokeet. Roolit vaihdetaan seuraavassa työvaiheessa.
 

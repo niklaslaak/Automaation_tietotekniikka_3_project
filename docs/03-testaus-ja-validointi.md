@@ -43,8 +43,8 @@ Alla olevat suoritetut tulokset ovat **AI-agentin ympäristöstä 4.11.2026, Nod
 | V1, V2 | BOM, Windows-rivinvaihdot, tyhjä sisärivi, ylimääräinen sarake | Sallitut muodot hyväksytään, virheelliset hylätään | Odotuksen mukainen | Läpäisi |
 | V2, V3 | Ylikokoinen tiedosto ja laskennan ylivuoto | Selkeä hylkäys | Hylättiin | Läpäisi |
 | V5 | Aiempi tiedostonluku valmistuu uudemman valinnan jälkeen | Ei korvaa uudempaa tilaa | Ei korvannut | Tapahtumatesti läpäisi |
-| V1–V5 | Oikea selain, tiedostovalitsin ja paikallinen käynnistys | Ohjelma toimii yllä olevilla kokeilla | Agentin selainajo estyi. Niklas vahvisti neljä käsin tehtyä koetta Edgessä, ks. alla | Neljä käyttäjän koetta läpäisi; agentin selainautomaatio edelleen ajamatta |
-| V6 | Hintakuvaaja | Myöhempi lisäominaisuus | Ei toteutettu eikä testattu | Rajattu tästä muutoksesta pois |
+| V1–V5 | Oikea selain, tiedostovalitsin ja paikallinen käynnistys | Ohjelma toimii yllä olevilla kokeilla | Niklas vahvisti neljä käsin tehtyä koetta Edgessä; Aatun V6-koe suoritettiin selainautomaatiossa | Toiminnot vahvistettu |
+| V6 | Hintakuvaaja | Jokaiselle ladatulle tunnille näytetään hinta snt/kWh ja laskennan valitsema jakso korostuu | Neljän tunnin pylväskuvaaja ja kaksi vihreänä korostettua tuntia näkyivät laskennan jälkeen; negatiivinen hinta näkyi oikein; virheellinen tuonti poisti kuvaajan | Läpäisi selainautomaatiossa |
 
 ## Olennainen virhe- tai rajatapaus
 
@@ -57,8 +57,18 @@ Käsin laskettu esimerkki vastaa automaattisen laskennan tulosta. Niklas kokeili
 | Kokeilija | Päivämäärä ja selain | Koe ja havainto | Johtopäätös |
 |---|---|---|---|
 | Niklas | 4.11.2026, Microsoft Edge (versio ei tiedossa) | Normaali laskenta, liian pitkä käyttöaika, puuttuva tunti ja negatiivinen hinta toimivat käyttäjän ilmoituksen mukaan odotetusti | Neljä koetta läpäisi |
-| Aatu | Täydennetään kokeen jälkeen | Vielä tekemättä | Avoin |
+| Aatu | Copilot-selaintestaus: Chromium, paikallinen tiedosto | Esimerkkihinnat, liian pitkä käyttöaika, negatiiviset hinnat, puuttuva tunti ja 375 pikselin leveys toimivat odotetusti | Kuvaajan pääkohdat ja virheiden käsittely läpäisi; manuaalinen selainkoe ja näppäimistökäyttö ovat vielä vahvistamatta |
 | Toinen pari | Täydennetään katselmoinnin jälkeen | Perusteltu palaute ja sen perusteella tehty päätös puuttuvat | Avoin |
+
+### Aatun selainautomaatiossa suoritetut kokeet
+
+| Vaatimus | Koe | Havaittu tulos | Tulos |
+|---|---|---|---|
+| V1, V4, V5, V6 | esimerkkihinnat.csv, 1 kW / 2 h | 4 tuntia ladattu; 0,08 €, klo 01–03, 2 kWh; neljä pylvästä ja kaksi valittua | Läpäisi |
+| V3 | Sama aineisto, käyttöaika 5 h | Virheilmoitus käyttöajan ylittäessä aineiston pituuden | Läpäisi |
+| V2, V4, V6 | negatiiviset-hinnat.csv, 1 kW / 2 h | −0,02 € ja valittu jakso kuvassa | Läpäisi |
+| V2, V5, V6 | virhe-puuttuva-tunti.csv | Virheilmoitus, vanha tulos piilossa, laskentapainike poissa käytöstä ja kuvaaja piilotettu | Läpäisi |
+| V5, V6 | 375 pikselin selainleveys | Sivulla ei vaakasuoraa vieritystä kuvan rajaamisen jälkeen | Läpäisi |
 
 ### Niklaksen käsin tekemät selainkokeet 4.11.2026
 
@@ -71,11 +81,11 @@ Tulokset perustuvat käyttäjän keskustelussa antamaan vahvistukseen. Normaalin
 | V2, V5 | virhe-puuttuva-tunti.csv | Virheilmoitus ja aiempi tulos poistuu | Läpäisi |
 | V2, V4 | negatiiviset-hinnat.csv, 1 kW / 2 h | Klo 01–03, −0,02 € | Läpäisi |
 
-Näiden kokeiden perusteella ensimmäinen käyttötapaus toimii Niklaksen Edgessä. Näppäimistökäyttöä, mobiiliasettelua, sivun uudelleenlatausta tai Aatun katselmointia ei ole vielä vahvistettu tehdyiksi.
+Niklas vahvisti ensimmäisen käyttötapauksen Edgessä ja Aatun selainautomaatiossa vahvistettiin hintakuvaajan keskeiset tilat.
 
 ## Epäonnistumiset ja tunnetut puutteet
 
-- Agentin `node tests/browser.cjs` -ajo pysähtyi, koska Chromiumin suoritustiedostoa ei löytynyt. Selaimen latausyritys epäonnistui virheeseen ”End of central directory record signature not found”. Agentin selainautomaatiota tai agentin ulkoasun visuaalista tarkistusta ei siis merkitä läpäisseeksi. Niklaksen erilliset Edge-kokeet on kirjattu yllä.
-- Laskenta- ja tapahtumakäsittelytestit läpäisivät 22/22. Niklas vahvisti neljä toiminnallista koetta Edgellä. Aatun kokeet, näppäimistökäyttö ja mobiiliasettelu ovat vielä vahvistamatta.
-- V6, oikea verkkodata, varttihinnat, kellonsiirtopäivät ja laiteohjaus eivät kuulu ensimmäiseen versioon.
+- Node.js-pohjaisten laskenta- ja tapahtumakäsittelytestien ajo ei ollut saatavilla tarkistusympäristössä. Käytössä oli lisäksi Copilot-selaintestaus, jossa Chromium ja sovelluksen paikallinen tiedosto toimivat.
+- Laskenta- ja tapahtumakäsittelytestit olivat aiemmin läpäisseet 22/22 agentin ympäristössä. Niitä ei ajeta uudelleen tässä tarkastuksessa.
+- Oikea verkkodata, varttihinnat, kellonsiirtopäivät ja laiteohjaus eivät kuulu ensimmäiseen versioon.
 - Todellisen laitteen teho voi vaihdella. Tulos perustuu syötettyyn vakiotehoon ja tiedoston hintoihin, ei koko sähkölaskuun.
