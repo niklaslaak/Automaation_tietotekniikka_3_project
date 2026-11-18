@@ -37,8 +37,9 @@ Näiden neljän kokeen perusteella ensimmäinen käyttötapaus toimi selaimessan
 
 ## Työnjako ja kummankin konkreettinen osuus
 
-- **Niklas:** Valitsin projektin aiheen, perustin ja julkaisin GitHub-repositorion sekä lisäsin opettajan projektipohjan. Osallistuin suunnitteluun ja vaatimusten määrittelyyn keskustelussa, ohjasin työtä pyynnöillä ja huolehdin alkuvaiheen etenemisestä sekä tiedostojen hallinnasta. Otin GitHub Desktopin ja VS Coden käyttöön, hain muutokset koneelleni, muokkasin dokumenttitekstiä ja suoritin neljä selainkoetta. Yhdistin projektikuvauksen pull requestin #1.
-- **Aatu:** Yhdisti ensimmäisen ohjelmaversion pull requestin #2 päähaaraan 9.11.2026. Hänen omat testihavaintonsa, katselmoinnin perustelunsa ja muu toteutunut työnsä täydennetään projektin edetessä.
-- **ChatGPT/Codex:** Tuotti projektikuvauksen luonnoksen, ensimmäisen ohjelmaversion koodin, esimerkkidatan ja testit sekä laati ja päivitti dokumentteja pyyntöjemme ja ilmoittamiemme havaintojen perusteella.
+- **Niklas:** esitti aihetoiveen, loi ja julkaisi repon, lisäsi projektipohjan, pyysi AI:lta projektikuvauksen ja toteutuksen sekä yhdisti projektikuvauksen pull requestin #1. Keskustelussa hän vahvisti saaneensa muutokset näkyviin paikallisesti.
+- **Aatu:** toteutti hintakuvaajan, jossa jokainen ladattu tunti näkyy hintapylväänä ja laskennan valitsema käyttöjakso korostetaan. Negatiiviset hinnat näkyvät nollaviivan alapuolella.
+- **AI-agentti:** laati määrittelyluonnoksen sekä ensimmäisen ohjelmaversion ja sen testit. Koodia ei kirjata opiskelijoiden käsin kirjoittamaksi.
+- **Sovittava seuraavaksi:** ensimmäisen koodimuutoksen katselmoija ja kummankin omat kokeet. Roolit vaihdetaan seuraavassa työvaiheessa.
 
 Seuraavissa vaiheissa käymme muutokset yhdessä läpi, testaamme toimintaa ja teemme tarvittavat korjaukset. Tarkoituksena on jakaa työtehtäviä tasaisesti ja vaihtaa rooleja. Vielä täydennetään alkuperäinen alkuprompt, katselmointien perustelut ja Aatun testihavainnot.

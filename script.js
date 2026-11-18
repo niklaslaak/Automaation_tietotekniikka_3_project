@@ -105,11 +105,134 @@ if (typeof document !== "undefined") {
   const number = new Intl.NumberFormat("fi-FI", { maximumFractionDigits: 6 });
   const currency = new Intl.NumberFormat("fi-FI", { style: "currency", currency: "EUR" });
 
+  function svgElement(name, attributes = {}) {
+    if (typeof document.createElementNS !== "function") return null;
+    const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+    Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+    return element;
+  }
+
+  function drawChart(chartRows, result = null) {
+    const chart = get("price-chart");
+    const wrapper = get("chart-wrapper");
+    const empty = get("chart-empty");
+    if (!chart || typeof chart.replaceChildren !== "function") return;
+
+    if (!chartRows.length) {
+      chart.replaceChildren();
+      wrapper.hidden = true;
+      empty.hidden = false;
+      return;
+    }
+
+    wrapper.hidden = false;
+    empty.hidden = true;
+    chart.replaceChildren();
+
+    const prices = chartRows.map(row => Number(row.price));
+    let minimum = Math.min(0, ...prices);
+    let maximum = Math.max(0, ...prices);
+    if (minimum === maximum) {
+      minimum -= 1;
+      maximum += 1;
+    } else {
+      const padding = (maximum - minimum) * 0.08;
+      minimum -= padding;
+      maximum += padding;
+    }
+
+    const width = 800;
+    const height = 320;
+    const left = 54;
+    const right = 16;
+    const top = 18;
+    const bottom = 46;
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+    const x = index => left + (index + 0.5) * plotWidth / chartRows.length;
+    const y = price => top + (maximum - price) * plotHeight / (maximum - minimum);
+    const bandWidth = plotWidth / chartRows.length;
+    const barWidth = Math.max(1, Math.min(18, bandWidth * 0.72));
+
+    const zeroY = y(0);
+    for (let i = 0; i <= 4; i++) {
+      const value = maximum - (maximum - minimum) * i / 4;
+      const gridY = y(value);
+      const grid = svgElement("line", {x1:left, y1:gridY, x2:width-right, y2:gridY, class:"chart-grid"});
+      const label = svgElement("text", {x:left-8, y:gridY+4, "text-anchor":"end", class:"chart-axis-label"});
+      if (grid) chart.appendChild(grid);
+      if (label) {
+        label.textContent = `${number.format(value)} `;
+        chart.appendChild(label);
+      }
+    }
+
+    const zeroLine = svgElement("line", {x1:left, y1:zeroY, x2:width-right, y2:zeroY, class:"chart-zero"});
+    if (zeroLine) chart.appendChild(zeroLine);
+
+    let selectedStart = -1;
+    let selectedEnd = -1;
+    if (result) {
+      selectedStart = chartRows.findIndex(row => row.time === result.start);
+      selectedEnd = selectedStart >= 0 ? selectedStart + result.duration - 1 : -1;
+    }
+
+    prices.forEach((price, index) => {
+      const barTop = price >= 0 ? y(price) : zeroY;
+      const barBottom = price >= 0 ? zeroY : y(price);
+      const selected = index >= selectedStart && index <= selectedEnd;
+      const rect = svgElement("rect", {
+        x:x(index)-barWidth/2,
+        y:barTop,
+        width:barWidth,
+        height:Math.max(1, barBottom-barTop),
+        rx:Math.min(3, barWidth/4),
+        class:`chart-bar${selected ? " selected" : ""}`
+      });
+      if (!rect) return;
+      const title = svgElement("title");
+      if (title) {
+        title.textContent = `${formatChartTime(chartRows[index].time)}: ${number.format(price)} snt/kWh${selected ? " — valittu jakso" : ""}`;
+        rect.appendChild(title);
+      }
+      chart.appendChild(rect);
+    });
+
+    const labelIndexes = chartRows.length <= 8
+      ? chartRows.map((_, index) => index)
+      : [0, Math.floor((chartRows.length-1)/2), chartRows.length-1];
+    labelIndexes.forEach(index => {
+      const label = svgElement("text", {
+        x:x(index),
+        y:height-18,
+        "text-anchor":"middle",
+        class:"chart-axis-label"
+      });
+      if (label) {
+        label.textContent = formatChartTime(chartRows[index].time);
+        chart.appendChild(label);
+      }
+    });
+
+    const unit = svgElement("text", {x:left, y:10, class:"chart-axis-label"});
+    if (unit) {
+      unit.textContent = "snt/kWh";
+      chart.appendChild(unit);
+    }
+  }
+
+  function formatChartTime(time) {
+    const date = new Date(time);
+    const pad = value => String(value).padStart(2, "0");
+    return `${pad(date.getUTCDate())}.${pad(date.getUTCMonth()+1)}. ${pad(date.getUTCHours())}:00`;
+  }
+
   function clearResult() {
     get("result").hidden = true;
     get("empty-result").hidden = false;
     get("error").hidden = true;
     get("error").textContent = "";
+    drawChart(rows);
   }
   function showError(message) {
     get("error").textContent = message;
@@ -136,6 +259,7 @@ if (typeof document !== "undefined") {
       rows = EnergyOptimizer.parseCsv(text);
       get("file-status").textContent = `${file.name}: ladattu ${rows.length} tuntia.`;
       get("calculate").disabled = false;
+      drawChart(rows);
     } catch (error) {
       if (version !== loadVersion) return;
       rows = [];
@@ -157,6 +281,7 @@ if (typeof document !== "undefined") {
       get("result-duration").textContent = `${result.duration} h`;
       get("empty-result").hidden = true;
       get("result").hidden = false;
+      drawChart(rows, result);
     } catch (error) {
       showError(error.message);
     }

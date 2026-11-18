@@ -33,7 +33,7 @@ Hyväksymiskriteerit kuvaavat tavoiteltua toimintaa. Ensiversion automaattiset t
 
 Vähimmäiskokonaisuus on selaimessa paikallisesti toimiva sovellus, joka toteuttaa vaatimukset V1–V5. Käyttäjä tuo hintatiedoston, syöttää yhden laitteen vakiotehon ja kokonaisina tunteina annettavan käyttöajan sekä saa halvimman yhtenäisen jakson ja kustannusarvion.
 
-Ensimmäinen pieni toteutusvaihe kattaa koko tämän käyttötapauksen yksinkertaisella käyttöliittymällä. Ennen toteutusta sovitaan vähintään V4:n normaali testitapaus ja V3:n rajatapaus, jossa neljän tunnin aineistosta pyydetään viiden tunnin käyttöjaksoa. Kuvaaja lisätään erillisenä myöhempänä vaiheena.
+Ensimmäinen pieni toteutusvaihe kattaa koko tämän käyttötapauksen yksinkertaisella käyttöliittymällä. Ennen toteutusta sovitaan vähintään V4:n normaali testitapaus ja V3:n rajatapaus, jossa neljän tunnin aineistosta pyydetään viiden tunnin käyttöjaksoa. Kuvaaja toteutetaan erillisenä käyttöliittymäosana yllä olevien V1–V5-perustoimintojen rinnalle.
 
 Ensimmäisestä versiosta rajataan pois:
 
@@ -103,4 +103,3 @@ aika;hinta_snt_kwh
 - **4.11.2026:** Ensimmäinen määrittely rajattiin yhden laitteen vakiotehoon, yhtenäiseen käyttöjaksoon ja itse tuotettuun tuntihintaiseen CSV-aineistoon. Näin laskenta voidaan toteuttaa ja todentaa ilman verkkopalvelua tai laitteistoa. Tämä on tekijöiden yhdessä tarkistettava ensimmäinen määrittelyluonnos.
 
 - **4.11.2026, ensimmäinen toteutus:** Tiedoston kooksi rajataan enintään 1 000 000 tavua ja aineistoksi 10 000 tuntia selaimen kuormituksen rajaamiseksi. Tuetut vuodet ovat 0001–9998. Nämä tekniset rajat näkyvät käyttöohjeessa. Laskentatestit lisätään `tests/optimizer.test.js`-tiedostoon ja käyttöliittymän tapahtumakäsittelyn testit `tests/ui.test.js`-tiedostoon; jälkimmäinen ei korvaa oikeaa selainkoetta.
-

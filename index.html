@@ -49,6 +49,17 @@
         </div>
       </section>
     </div>
+    <section class="card chart-card" aria-labelledby="chart-title">
+      <h2 id="chart-title">Hintakuvaaja</h2>
+      <div id="chart-empty">Ladataksesi hintojen kuvaajan valitse CSV-tiedosto.</div>
+      <div id="chart-wrapper" hidden>
+        <svg id="price-chart" role="img" aria-label="Tuntikohtaisten sähkönhintojen kuvaaja" viewBox="0 0 800 320"></svg>
+        <div class="chart-legend" aria-label="Kuvaajan selite">
+          <span><i class="legend-bar"></i> Tuntihinta (snt/kWh)</span>
+          <span><i class="legend-selected"></i> Valittu käyttöjakso</span>
+        </div>
+      </div>
+    </section>
     <section class="notes" aria-labelledby="notes-title">
       <h2 id="notes-title">Mitä arvio sisältää?</h2>
       <p>Laskenta olettaa, että laite käyttää samaa tehoa koko jakson ajan. Hinnat käytetään tiedostosta sellaisinaan: arvonlisäveroa, siirtoa, sähköveroa, marginaalia tai perusmaksuja ei lisätä. Tulos ei ole koko sähkölaskun arvio.</p>
