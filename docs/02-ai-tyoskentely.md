@@ -2,37 +2,38 @@
 
 ## Todellisuudessa käytetty alkuprompt
 
-Projektin varsinainen alkuperäinen alkuprompt on vielä poimittava keskustelun alusta tekijöiden toimesta. Alla olevat myöhemmät pyynnöt ovat sanatarkkoja näkyvästä keskustelusta; ne eivät korvaa alkupromptia.
+Valitsimme projektin aiheeksi sähkön hinnan optimoinnin. Tämän jälkeen täydensimme projektikuvausta, kuten käyttäjätarvetta ja rajausta. Kun projektikuvaus ja hyväksymiskriteerit olivat valmiina, pyysin tekoälyltä apua ensimmäisen ohjelmaversion tekemiseen.
 
-- Aihetoive: ”aihe voisi olla sähkön hinann optimointi”
-- Projektikuvauksen täydennyspyyntö: ”tee kohta 2 ja täydennä projektikuvaus.md keksi käyttäjä tarve ja rajaus”
-- Ensimmäisen toteutuksen pyyntö 4.11.2026: ”selvä, voitko sinä tehdä seuraavan vaiheen”
-
-Viimeisen pyynnön kontekstina olivat yhteinen projektikuvaus, sovitut normaalin ja virhetilanteen hyväksymiskriteerit sekä keskustelu ensimmäisestä ohjelmaversiosta. Pyyntö ei ollut irrallinen ohje koko sovelluksen vapaaseen toteutukseen.
+Toteutuspyynnön taustalla olivat keskustelussa annettu kurssiohje sekä [projektikuvaus ja hyväksymiskriteerit](01-projektikuvaus.md). Tekoälylle oli kuvattu ohjelman odotettu toiminta sekä normaalissa tilanteessa että virhetilanteissa.
 
 ## Jatkuva työskentelyprosessi
 
-Työkalulle annettiin kurssin työpajaohje ja projektin tavoite keskustelussa. Codex luki olemassa olevat tiedostot GitHub-yhteydellä. Repossa ei tässä vaiheessa ollut AGENTS.md-tiedostoa. Sovitut toiminnalliset vaatimukset luettiin tiedostosta `docs/01-projektikuvaus.md`.
+Perustin yhteisen GitHub-repositorion, lisäsin opettajan projektipohjan ja valitsin projektin aiheen. Projektin vaatimukset ja suunnitelma kirjattiin docs/01-projektikuvaus.md-tiedostoon, jonka pohjalta toteutusta lähdettiin tekemään.
 
-Projektikuvauksen muutos tehtiin omaan haaraan ja pull requestiin #1. GitHubin mukaan Niklas yhdisti sen päähaaraan 4.11.2026. Tämä osoittaa yhdistämisen, mutta ei itsessään todista parin yhteistä katselmointia.
+ChatGPT/Codex laati pyynnöstäni projektikuvauksen luonnoksen ja tallensi sen työhaaraan sekä pull requestiin #1. Yhdistin muutokset main-haaraan 4.11.2026. Projektin tiedostot ja muutokset ovat GitHubissa, josta pystymme seuraamaan työn etenemistä.
 
-Ensimmäinen ohjelmaversio tehdään haaraan `feature/ensimmainen-versio` päähaaran määrittelyn pohjalta. Codex tuottaa koodin, esimerkkidatan ja automaattiset testit sekä kirjaa itse suorittamansa kokeet. Tekijät lukevat koodin, suorittavat omat kokeensa ja tekevät päätöksen muutoksen hyväksymisestä. Tekemättömiä ihmisten kokeita ei kirjata suoritetuiksi.
+Ensimmäinen ohjelmaversio toteutettiin feature/ensimmainen-versio-haarassa määriteltyjen vaatimusten ja hyväksymiskriteerien pohjalta. ChatGPT/Codex tuotti ensimmäisen version ohjelmakoodin, esimerkkidatan ja automaattiset testit. Sitä käytettiin myös dokumenttien laatimiseen ja Git-työskentelyn neuvontaan. Työkalu luki olemassa olevat tiedostot GitHub-yhteydellä; kurssiohjeet ja tehtävärajaukset annettiin keskustelussa. Toteutusvaiheessa repossa ei ollut AGENTS.md-tiedostoa.
+
+Kokeilin ohjelmaa omalla koneellani Microsoft Edgellä ja vertasin tuloksia sovittuihin odotuksiin. Aatu yhdisti ensimmäisen ohjelmaversion pull requestin #2 päähaaraan 9.11.2026. Testihavainnot kirjataan [testausdokumenttiin](03-testaus-ja-validointi.md). Jatkossa käymme muutokset läpi, kokeilemme toimintaa ja kirjaamme hyväksymisen tai korjausten perustelut.
 
 ## Käytetyt työkalut
 
 | Työkalu | Malli tai versio, jos tiedossa | Käyttötarkoitus | Tarkistustapa |
 |---|---|---|---|
-| ChatGPT / Codex | GPT-6-pohjainen agentti; tarkka palveluversio ei tiedossa | Projektikuvaus ja ensimmäinen ohjelmaversio | Agentin laskenta- ja tapahtumakäsittelytestit; selainkoe ja tekijöiden katselmointi vielä tehtävä |
-| GitHub-yhteys | Versio ei tiedossa | Repon luku, työhaara, commit ja pull request | Muutosten tarkastelu GitHubissa |
-| GitHub Desktop ja VS Code | Tekijät täydentävät omat versionsa tarvittaessa | Paikallinen työkopio ja tiedostojen muokkaaminen | Tekijöiden käytännön työ |
-| Node.js | v24.22.1 agentin ympäristössä | Laskennan ja validoinnin testit | `node --test tests/optimizer.test.js` |
-| Playwright / Chromium | Selain ei ollut saatavilla agentin ympäristössä | Valmisteltu selainkoe; suoritus estyi | `node tests/browser.cjs` |
+| ChatGPT / Codex | GPT-6-pohjainen agentti; tarkka palveluversio ei tiedossa | Suunnittelu, ensimmäisen version koodi, testit, dokumentointi ja ohjeistus | Automaattiset testit ja omat selainkokeeni |
+| GitHub ja GitHub-yhteys | Versio ei tiedossa | Repon tiedostot, työhaarat ja pull requestit | Muutosten vertailu ja yhdistäminen |
+| GitHub Desktop ja VS Code | Versiot eivät tiedossa | Paikallisen projektin hallinta ja tiedostojen muokkaaminen | Muutosten hakeminen, tallentaminen ja ohjelman kokeilu |
+| Microsoft Edge | Versio ei tiedossa | Omat toiminnalliset kokeeni | Neljä testitapausta 4.11.2026 |
+| Node.js | v24.22.1 agentin ympäristössä | Laskennan ja tapahtumakäsittelyn automaattiset testit | 22 testiä läpäisi |
+| Playwright / Chromium | Chromiumia ei saatu asennettua agentin ympäristöön | Valmisteltu selainautomaatiotesti | Ajo jäi suorittamatta onnistuneesti |
 
 ## Konkreettinen tarkistusesimerkki
 
-Projektikuvaus esitettiin ensin katselmoitavana muutoksena, ja Niklas yhdisti sen pull requestissa #1. Tekijöiden tulee täydentää tähän, mitä he tarkistivat ja miksi hyväksyivät rajauksen; perustelua ei päätellä pelkästä merge-toiminnosta.
+Testasin ensimmäistä versiota Microsoft Edgellä 4.11.2026. Esimerkkiaineistolla, teholla 1 kW ja käyttöajalla 2 h ohjelma näytti jakson klo 01–03, kulutuksen 2 kWh ja kustannuksen 0,08 €. Tulos vastasi odotusta: (5 + 3) / 100 = 0,08 €.
 
-Ohjelmaversion tarkistuksessa agentti vertaa 1 kW:n ja kahden tunnin tulosta käsin laskettuun arvoon (5 + 3) / 100 = 0,08 €. Lisäksi tarkistetaan viiden tunnin käyttöpyynnön hylkäys neljän tunnin aineistosta. Suoritetut agenttikokeet kirjataan testausdokumenttiin erillään käyttäjävalidoinnista.
+Kokeilin myös liian pitkää käyttöaikaa, puuttuvaa tuntia ja negatiivista hintaa. Vahvistin kokeiden toimivan odotetusti. Negatiivisen hinnan kokeessa minulla oli ensin valittuna tavallinen esimerkkitiedosto. Oikean tiedoston valinnan jälkeen tulos oli odotettu −0,02 €. Tässä tilanteessa korjasin aineiston valinnan; koodimuutosta ei tarvittu.
+
+Näiden neljän kokeen perusteella ensimmäinen käyttötapaus toimi selaimessani. Ne eivät yksin kata kaikkia syötteitä tai käytettävyyttä. Agentin suorittamat automaattiset testit ja omat kokeeni on eroteltu testausdokumentissa. Projektikuvauksen katselmoinnin ja hyväksymisen perustelut täydennetään vielä; pelkkä yhdistäminen ei kerro tarkistuksen sisältöä.
 
 ## Työnjako ja kummankin konkreettinen osuus
 
@@ -41,4 +42,4 @@ Ohjelmaversion tarkistuksessa agentti vertaa 1 kW:n ja kahden tunnin tulosta kä
 - **AI-agentti:** laati määrittelyluonnoksen sekä ensimmäisen ohjelmaversion ja sen testit. Koodia ei kirjata opiskelijoiden käsin kirjoittamaksi.
 - **Sovittava seuraavaksi:** ensimmäisen koodimuutoksen katselmoija ja kummankin omat kokeet. Roolit vaihdetaan seuraavassa työvaiheessa.
 
-Toisen parin palaute ja siihen perustuva päätös ovat vielä tekemättä.
+Seuraavissa vaiheissa käymme muutokset yhdessä läpi, testaamme toimintaa ja teemme tarvittavat korjaukset. Tarkoituksena on jakaa työtehtäviä tasaisesti ja vaihtaa rooleja. Vielä täydennetään alkuperäinen alkuprompt, katselmointien perustelut ja Aatun testihavainnot.
