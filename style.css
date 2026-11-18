@@ -30,6 +30,20 @@ dt { color: #4b635c; }
 dd { margin: 0; font-weight: 650; text-align: right; overflow-wrap: anywhere; }
 .notes { margin: 32px 0; max-width: 880px; font-size: .9rem; line-height: 1.75; color: #4a6065; }
 .notes h2 { margin-bottom: 8px; color: #172e35; }
+.chart-card { margin-top: 24px; }
+#chart-empty { color: #53666b; background: #f0f5f3; border-radius: 8px; padding: 16px; }
+#chart-wrapper { width: 100%; overflow-x: auto; }
+#price-chart { display: block; width: 100%; min-width: 560px; height: auto; background: #fbfcfb; border-radius: 8px; }
+.chart-grid { stroke: #dce5e2; stroke-width: 1; }
+.chart-axis-label { fill: #53666b; font-size: 12px; }
+.chart-zero { stroke: #7d918b; stroke-width: 1.5; }
+.chart-bar { fill: #82aaa0; }
+.chart-bar.selected { fill: #185b49; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 10px; color: #53666b; font-size: .82rem; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.chart-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; }
+.legend-bar { background: #82aaa0; }
+.legend-selected { background: #185b49; }
 summary { cursor: pointer; font-weight: 650; }
 pre { overflow-x: auto; padding: 16px; background: #e7eeea; border-radius: 8px; }
 footer { border-top: 1px solid #dce5e2; padding-top: 20px; color: #53666b; font-size: .8rem; }

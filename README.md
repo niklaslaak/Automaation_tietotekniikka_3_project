@@ -6,7 +6,7 @@ Lue [projektin määrittely ja hyväksymiskriteerit](docs/01-projektikuvaus.md).
 
 Kurssiprojekti: Niklas Laak ja Aatu Lepola. Sovellus auttaa kotitalouden asukasta löytämään yhden sähkölaitteen halvimman yhtenäisen käyttöjakson CSV-tiedoston tuntihinnoista. AI-avusteinen toteutustapa ja työnjako kuvataan [AI-dokumentissa](docs/02-ai-tyoskentely.md).
 
-Ensimmäinen versio toteuttaa V1–V5:n toiminnot. Kuvaaja (V6), verkkohintojen haku ja laiteohjaus eivät ole mukana.
+Ensimmäinen versio toteuttaa V1–V6:n toiminnot. Verkkohintojen haku ja laiteohjaus eivät ole mukana.
 
 ## Käynnistys
 
