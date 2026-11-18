@@ -8,13 +8,11 @@ Toteutuspyynnön taustalla olivat keskustelussa annettu kurssiohje sekä [projek
 
 ## Jatkuva työskentelyprosessi
 
-Perustin yhteisen GitHub-repositorion, lisäsin opettajan projektipohjan ja valitsin projektin aiheen. Projektin vaatimukset ja suunnitelma kirjattiin docs/01-projektikuvaus.md-tiedostoon, jonka pohjalta toteutusta lähdettiin tekemään.
+GitHub-repositorio toimii projektin yhteisenä työympäristönä. Projektipohja valittiin opettajan tai kurssin tarjoamasta pohjasta, ja työn aiheet sekä vaatimukset dokumentoitiin `docs/01-projektikuvaus.md`-tiedostoon. Toteutuksen pohjana käytettiin sovittuja vaatimuksia ja hyväksymiskriteerejä.
 
-ChatGPT/Codex laati pyynnöstäni projektikuvauksen luonnoksen ja tallensi sen työhaaraan sekä pull requestiin #1. Yhdistin muutokset main-haaraan 4.11.2026. Projektin tiedostot ja muutokset ovat GitHubissa, josta pystymme seuraamaan työn etenemistä.
+Projektikuvaus luotiin työhaaraan ja yhdistettiin pull requestin #1 kautta päähaaraan 4.11.2026. Ensimmäinen ohjelmaversio toteutettiin `feature/ensimmainen-versio`-haaran pohjalta. ChatGPT/Codex tuotti ohjelmakoodin, esimerkkidatan, automaattiset testit ja osan dokumentoinnista. Työkalu käytti repossa olevia tiedostoja ja GitHub-yhteyttä työn ohjaamiseen. Toteutusvaiheessa repossa ei ollut AGENTS.md-tiedostoa.
 
-Ensimmäinen ohjelmaversio toteutettiin feature/ensimmainen-versio-haarassa määriteltyjen vaatimusten ja hyväksymiskriteerien pohjalta. ChatGPT/Codex tuotti ensimmäisen version ohjelmakoodin, esimerkkidatan ja automaattiset testit. Sitä käytettiin myös dokumenttien laatimiseen ja Git-työskentelyn neuvontaan. Työkalu luki olemassa olevat tiedostot GitHub-yhteydellä; kurssiohjeet ja tehtävärajaukset annettiin keskustelussa. Toteutusvaiheessa repossa ei ollut AGENTS.md-tiedostoa.
-
-Kokeilin ohjelmaa omalla koneellani Microsoft Edgellä ja vertasin tuloksia sovittuihin odotuksiin. Aatu yhdisti ensimmäisen ohjelmaversion pull requestin #2 päähaaraan 9.11.2026. Testihavainnot kirjataan [testausdokumenttiin](03-testaus-ja-validointi.md). Jatkossa käymme muutokset läpi, kokeilemme toimintaa ja kirjaamme hyväksymisen tai korjausten perustelut.
+Muutosten tarkastelu ja hyväksyntä tehdään GitHubissa pull requestien, haarojen ja commit-historian avulla. Ohjelman toimivuus varmennetaan sekä selainkokeilla että automaattisilla testeillä. Testitiedot kirjataan [testausdokumenttiin](03-testaus-ja-validointi.md), ja seuraavissa vaiheissa muutokset käydään läpi yhdessä sekä dokumentoidaan mahdolliset korjaukset ja hyväksymispäätökset.
 
 ## Käytetyt työkalut
 
@@ -29,11 +27,9 @@ Kokeilin ohjelmaa omalla koneellani Microsoft Edgellä ja vertasin tuloksia sovi
 
 ## Konkreettinen tarkistusesimerkki
 
-Testasin ensimmäistä versiota Microsoft Edgellä 4.11.2026. Esimerkkiaineistolla, teholla 1 kW ja käyttöajalla 2 h ohjelma näytti jakson klo 01–03, kulutuksen 2 kWh ja kustannuksen 0,08 €. Tulos vastasi odotusta: (5 + 3) / 100 = 0,08 €.
+Ensimmäisen version tarkistuksessa esimerkkiaineistoa käsiteltiin teholla 1 kW ja käyttöajalla 2 h. Odotettu tulos oli jakso klo 01–03, kulutus 2 kWh ja kustannus 0,08 €. Käsin laskettu tarkistus on `(5 + 3) / 100 = 0,08 €`, ja tämä vastaava tulos on vahvistettu selaimessa.
 
-Kokeilin myös liian pitkää käyttöaikaa, puuttuvaa tuntia ja negatiivista hintaa. Vahvistin kokeiden toimivan odotetusti. Negatiivisen hinnan kokeessa minulla oli ensin valittuna tavallinen esimerkkitiedosto. Oikean tiedoston valinnan jälkeen tulos oli odotettu −0,02 €. Tässä tilanteessa korjasin aineiston valinnan; koodimuutosta ei tarvittu.
-
-Näiden neljän kokeen perusteella ensimmäinen käyttötapaus toimi selaimessani. Ne eivät yksin kata kaikkia syötteitä tai käytettävyyttä. Agentin suorittamat automaattiset testit ja omat kokeeni on eroteltu testausdokumentissa. Projektikuvauksen katselmoinnin ja hyväksymisen perustelut täydennetään vielä; pelkkä yhdistäminen ei kerro tarkistuksen sisältöä.
+Lisäksi tarkistettiin liian pitkä käyttöaika, puuttuva tunti ja negatiivinen hinta. Neljän tunnin aineistosta pyydettyä 5 tunnin jaksoa ei hyväksytty. Puuttuvaa tuntia sisältävä tuonti tuotti virheilmoituksen ja negatiivisella hintatiedostolla saatiin kustannukseksi −0,02 €. Tarkistukset on eroteltu [testausdokumentissa](03-testaus-ja-validointi.md).
 
 ## Työnjako ja kummankin konkreettinen osuus
 

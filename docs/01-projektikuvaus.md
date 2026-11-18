@@ -35,7 +35,7 @@ Vähimmäiskokonaisuus on selaimessa paikallisesti toimiva sovellus, joka toteut
 
 Ensimmäinen pieni toteutusvaihe kattaa koko tämän käyttötapauksen yksinkertaisella käyttöliittymällä. Ennen toteutusta sovitaan vähintään V4:n normaali testitapaus ja V3:n rajatapaus, jossa neljän tunnin aineistosta pyydetään viiden tunnin käyttöjaksoa. Kuvaaja toteutetaan erillisenä käyttöliittymäosana yllä olevien V1–V5-perustoimintojen rinnalle.
 
-Ensimmäisestä versiosta rajataan pois:
+Projektista rajataan pois:
 
 - Hintojen automaattinen haku, reaaliaikaiset hinnat ja hintaennusteet.
 - Oikeiden sähkölaitteiden ohjaus ja automaatiolaitteistot.

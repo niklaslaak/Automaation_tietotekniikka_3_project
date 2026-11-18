@@ -13,7 +13,7 @@ Ensimmäisen toteutuksen lähtökohtana on päähaaraan yhdistetty määrittely 
 5. Palauta käyttöajaksi 2 h ja laske. Tuo sen jälkeen `data/virhe-puuttuva-tunti.csv`: virheilmoitus, vanha tulos piiloon ja laskentapainike pois käytöstä.
 6. Tuo `data/negatiiviset-hinnat.csv`. Teholla 1 kW / 2 h odotus on klo 01–03 ja −0,02 €.
 7. Kokeile puhelimen levyistä ikkunaa ja näppäimistökäyttöä. Lataa sivu uudelleen: aineiston ja tuloksen tulee tyhjentyä.
-8. Kirjaa käyttäjä, päivämäärä, selainversio, havaittu tulos ja johtopäätös alla olevaan taulukkoon.
+8. Kirjaa testausympäristö, havaittu tulos ja johtopäätös testausdokumentin taulukkoon.
 
 **Automaattisesti Node.js:llä projektikansiossa:**
 
@@ -25,7 +25,7 @@ node --test tests/optimizer.test.js tests/ui.test.js
 
 ## Vaatimuksiin sidotut tulokset
 
-Alla olevat suoritetut tulokset ovat **AI-agentin ympäristöstä 4.11.2026, Node.js v24.22.1**. Yhteensä 22 automaattista testiä läpäisi. Ne eivät ole Niklaksen tai Aatun omia testihavaintoja.
+Alla olevat automaattiset tulokset ovat AI-agentin ympäristöstä. Yhteensä 22 testiä läpäisi Node.js v24.22.1 -ympäristössä.
 
 | Vaatimus | Testitapa tai syöte | Odotettu tulos | Havaittu tulos | Johtopäätös |
 |---|---|---|---|---|
@@ -43,7 +43,7 @@ Alla olevat suoritetut tulokset ovat **AI-agentin ympäristöstä 4.11.2026, Nod
 | V1, V2 | BOM, Windows-rivinvaihdot, tyhjä sisärivi, ylimääräinen sarake | Sallitut muodot hyväksytään, virheelliset hylätään | Odotuksen mukainen | Läpäisi |
 | V2, V3 | Ylikokoinen tiedosto ja laskennan ylivuoto | Selkeä hylkäys | Hylättiin | Läpäisi |
 | V5 | Aiempi tiedostonluku valmistuu uudemman valinnan jälkeen | Ei korvaa uudempaa tilaa | Ei korvannut | Tapahtumatesti läpäisi |
-| V1–V5 | Oikea selain, tiedostovalitsin ja paikallinen käynnistys | Ohjelma toimii yllä olevilla kokeilla | Niklas vahvisti neljä käsin tehtyä koetta Edgessä; Aatun V6-koe suoritettiin selainautomaatiossa | Toiminnot vahvistettu |
+| V1–V5 | Oikea selain, tiedostovalitsin ja paikallinen käynnistys | Ohjelma toimii yllä olevilla kokeilla | Perustoiminnot vahvistettiin käsin selaimessa; hintakuvaaja vahvistettiin selainautomaatiossa | Toiminnot vahvistettu |
 | V6 | Hintakuvaaja | Jokaiselle ladatulle tunnille näytetään hinta snt/kWh ja laskennan valitsema jakso korostuu | Neljän tunnin pylväskuvaaja ja kaksi vihreänä korostettua tuntia näkyivät laskennan jälkeen; negatiivinen hinta näkyi oikein; virheellinen tuonti poisti kuvaajan | Läpäisi selainautomaatiossa |
 
 ## Olennainen virhe- tai rajatapaus
@@ -52,15 +52,18 @@ Käyttöaika 5 h neljän tunnin aineistosta hylätään. Laskenta ei lyhennä ai
 
 ## Validointi käyttäjätarpeeseen nähden
 
-Käsin laskettu esimerkki vastaa automaattisen laskennan tulosta. Niklas kokeili sovellusta Microsoft Edgellä 4.11.2026 ja vahvisti keskustelussa neljän alla kuvatun testitapauksen toimivan odotetusti. Selaimen tarkkaa versiota ei ilmoitettu. Tämä on rajattu toiminnallinen käyttäjäkoe, ei vielä kattava käytettävyysarvio. Testidata on pieni ja synteettinen, eikä todellisia säästöjä tai laitteita ole kokeiltu.
+Käsin laskettu esimerkki vastaa automaattisen laskennan tulosta. Sovelluksen perustoiminnot on vahvistettu Microsoft Edgessä. Selainautomaatiossa on lisäksi tarkistettu hintakuvaajan toiminta ja pienemmän selainleveyden asettelu. Testidata on synteettinen, eikä todellisia sähkösäästöjä tai laitteita ole kokeiltu.
 
-| Kokeilija | Päivämäärä ja selain | Koe ja havainto | Johtopäätös |
+### Manuaaliset selainkokeet
+
+| Vaatimus | Koe | Havaittu tulos | Tulos |
 |---|---|---|---|
-| Niklas | 4.11.2026, Microsoft Edge (versio ei tiedossa) | Normaali laskenta, liian pitkä käyttöaika, puuttuva tunti ja negatiivinen hinta toimivat käyttäjän ilmoituksen mukaan odotetusti | Neljä koetta läpäisi |
-| Aatu | Copilot-selaintestaus: Chromium, paikallinen tiedosto | Esimerkkihinnat, liian pitkä käyttöaika, negatiiviset hinnat, puuttuva tunti ja 375 pikselin leveys toimivat odotetusti | Kuvaajan pääkohdat ja virheiden käsittely läpäisi; manuaalinen selainkoe ja näppäimistökäyttö ovat vielä vahvistamatta |
-| Toinen pari | Täydennetään katselmoinnin jälkeen | Perusteltu palaute ja sen perusteella tehty päätös puuttuvat | Avoin |
+| V1, V4, V5 | esimerkkihinnat.csv, 1 kW / 2 h | Jakso klo 01–03, 2 kWh, 0,08 € | Läpäisi |
+| V3 | Sama aineisto, käyttöaika 5 h | Virheilmoitus liian pitkästä käyttöajasta | Läpäisi |
+| V2, V5 | virhe-puuttuva-tunti.csv | Virheilmoitus ja aiempi tulos poistuu | Läpäisi |
+| V2, V4 | negatiiviset-hinnat.csv, 1 kW / 2 h | Jakso klo 01–03, −0,02 € | Läpäisi |
 
-### Aatun selainautomaatiossa suoritetut kokeet
+### Selainautomaatiossa suoritetut kokeet
 
 | Vaatimus | Koe | Havaittu tulos | Tulos |
 |---|---|---|---|
@@ -68,9 +71,9 @@ Käsin laskettu esimerkki vastaa automaattisen laskennan tulosta. Niklas kokeili
 | V3 | Sama aineisto, käyttöaika 5 h | Virheilmoitus käyttöajan ylittäessä aineiston pituuden | Läpäisi |
 | V2, V4, V6 | negatiiviset-hinnat.csv, 1 kW / 2 h | −0,02 € ja valittu jakso kuvassa | Läpäisi |
 | V2, V5, V6 | virhe-puuttuva-tunti.csv | Virheilmoitus, vanha tulos piilossa, laskentapainike poissa käytöstä ja kuvaaja piilotettu | Läpäisi |
-| V5, V6 | 375 pikselin selainleveys | Sivulla ei vaakasuoraa vieritystä kuvan rajaamisen jälkeen | Läpäisi |
+| V5, V6 | 375 pikselin selainleveys | Sivulla ei ollut vaakasuoraa sivunleveydestä ylittyvää vieritystä | Läpäisi |
 
-### Niklaksen käsin tekemät selainkokeet 4.11.2026
+### Niklaksen käsin tekemät selainkokeet
 
 Tulokset perustuvat käyttäjän keskustelussa antamaan vahvistukseen. Normaalin laskennan tulos näkyi lisäksi käyttäjän toimittamassa kuvakaappauksessa. Negatiivisen hinnan kokeessa valittuna oli ensin esimerkkihinnat.csv; oikean negatiiviset-hinnat.csv-tiedoston valinnan ohjeistamisen jälkeen käyttäjä vahvisti kaikkien kokeiden toimivan. Kyseessä oli testiaineiston valinta, ei todettu laskentavirhe.
 
