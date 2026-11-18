@@ -2,6 +2,8 @@
 
 Lue [projektin määrittely ja hyväksymiskriteerit](docs/01-projektikuvaus.md).
 
+**Uusi laajennettu versio V2:** [käynnistys ja käyttöohje](v2/README.md). Windowsissa käynnistä `kaynnista-v2.bat` (Python 3.12+ tarvitaan) ja avaa `http://127.0.0.1:8765`. V2 sisältää paikalliset tilit, tallennuksen, varttihinnat ja usean laitteen yhteisoptimoinnin. Alla olevat HTML-tiedoston avausohjeet koskevat alkuperäistä versiota.
+
 ## Tekijät ja tarkoitus
 
 Kurssiprojekti: Niklas Laak ja Aatu Lepola. Sovellus auttaa kotitalouden asukasta löytämään yhden sähkölaitteen halvimman yhtenäisen käyttöjakson CSV-tiedoston tuntihinnoista. AI-avusteinen toteutustapa ja työnjako kuvataan [AI-dokumentissa](docs/02-ai-tyoskentely.md).
