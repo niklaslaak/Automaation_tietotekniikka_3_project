@@ -31,14 +31,13 @@ Hyväksymiskriteerit kuvaavat tavoiteltua toimintaa. Ensiversion automaattiset t
 
 ## Rajaus ja vähimmäiskokonaisuus
 
-Vähimmäiskokonaisuus on selaimessa paikallisesti toimiva sovellus, joka toteuttaa vaatimukset V1–V5. Käyttäjä tuo hintatiedoston, syöttää yhden laitteen vakiotehon ja kokonaisina tunteina annettavan käyttöajan sekä saa halvimman yhtenäisen jakson ja kustannusarvion.
+Projektin ensimmäinen versio toimii paikallisesti selaimessa ja toteuttaa vaatimukset V1–V5. Käyttäjä lataa sähkön hintatiedoston ja syöttää laitteen tehon sekä käyttöajan kokonaisina tunteina. Ohjelma etsii halvimman yhtenäisen käyttöjakson ja laskee sille kustannusarvion. Laitteen tehon oletetaan pysyvän samana koko käyttöajan.
 
-Ensimmäinen pieni toteutusvaihe kattaa koko tämän käyttötapauksen yksinkertaisella käyttöliittymällä. Ennen toteutusta sovitaan vähintään V4:n normaali testitapaus ja V3:n rajatapaus, jossa neljän tunnin aineistosta pyydetään viiden tunnin käyttöjaksoa. Kuvaaja lisätään erillisenä myöhempänä vaiheena.
+Toteutamme ensin nämä toiminnot yksinkertaisella käyttöliittymällä. Ennen koodaamista sovimme V4:n normaalin testitapauksen ja V3:n rajatapauksen, jossa neljän tunnin hintatiedoista yritetään hakea viiden tunnin käyttöjaksoa. Hintakuvaajan lisäämme myöhemmin omana vaiheena.
 
 Ensimmäisestä versiosta rajataan pois:
 
 - Hintojen automaattinen haku, reaaliaikaiset hinnat ja hintaennusteet.
-- Oikeiden sähkölaitteiden ohjaus ja automaatiolaitteistot.
 - Usean laitteen yhteinen optimointi, käyttöjakson pilkkominen ja vaihteleva teho.
 - Varttihinnat ja osatunnin käyttöajat; ensimmäinen versio käyttää vain tuntiaineistoa.
 - Käyttäjän erikseen määrittämät sallitut käyttöikkunat: koko ladattu aineisto on sallittu hakualue.
