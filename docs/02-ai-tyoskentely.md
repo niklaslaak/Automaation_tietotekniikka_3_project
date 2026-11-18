@@ -1,5 +1,9 @@
 # AI-työskentely
 
+## V2-laajennus 18.11.2026
+
+Pyysin tekoälyä tekemään laajennetun version omaan haaraan, jotta Aatu voi muokata omia tiedostojaan rinnakkain. Valitsin paikallisen sovelluksen ja simulaation oikean laiteohjauksen sijasta. Tekoäly toteutti V2:n koodin, testit ja käyttöohjeen näiden valintojen pohjalta. Tämän vaiheen testit, rajoitukset ja vielä tehtävät omat kokeet näkyvät [V2:n testausraportissa](../v2/TESTAUS.md). Omaa tai Aatun uutta V2-selainkoetta ei ole vielä kirjattu suoritetuksi.
+
 ## Todellisuudessa käytetty alkuprompt
 
 Valitsimme projektin aiheeksi sähkön hinnan optimoinnin. Tämän jälkeen täydensimme projektikuvausta, kuten käyttäjätarvetta ja rajausta. Kun projektikuvaus ja hyväksymiskriteerit olivat valmiina, pyysin tekoälyltä apua ensimmäisen ohjelmaversion tekemiseen.
