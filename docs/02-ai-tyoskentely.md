@@ -2,13 +2,7 @@
 
 ## Todellisuudessa käytetty alkuprompt
 
-Valitsin projektin aiheeksi sähkön hinnan optimoinnin. Tämän jälkeen täydensimme projektikuvausta, kuten käyttäjätarvetta ja rajausta. Kun projektikuvaus ja hyväksymiskriteerit olivat valmiina, pyysin tekoälyltä apua ensimmäisen ohjelmaversion tekemiseen.
-
-Alkuperäinen alkuprompt täydennetään vielä keskustelun alusta. Seuraavat myöhemmät pyynnöt on säilytetty sellaisinaan:
-
-- Aiheen valinta: ”aihe voisi olla sähkön hinann optimointi”
-- Projektikuvauksen laatiminen: ”tee kohta 2 ja täydennä projektikuvaus.md keksi käyttäjä tarve ja rajaus”
-- Ensimmäinen toteutus: ”selvä, voitko sinä tehdä seuraavan vaiheen”
+Valitsimme projektin aiheeksi sähkön hinnan optimoinnin. Tämän jälkeen täydensimme projektikuvausta, kuten käyttäjätarvetta ja rajausta. Kun projektikuvaus ja hyväksymiskriteerit olivat valmiina, pyysin tekoälyltä apua ensimmäisen ohjelmaversion tekemiseen.
 
 Toteutuspyynnön taustalla olivat keskustelussa annettu kurssiohje sekä [projektikuvaus ja hyväksymiskriteerit](01-projektikuvaus.md). Tekoälylle oli kuvattu ohjelman odotettu toiminta sekä normaalissa tilanteessa että virhetilanteissa.
 
@@ -47,4 +41,4 @@ Näiden neljän kokeen perusteella ensimmäinen käyttötapaus toimi selaimessan
 - **Aatu:** Yhdisti ensimmäisen ohjelmaversion pull requestin #2 päähaaraan 9.11.2026. Hänen omat testihavaintonsa, katselmoinnin perustelunsa ja muu toteutunut työnsä täydennetään projektin edetessä.
 - **ChatGPT/Codex:** Tuotti projektikuvauksen luonnoksen, ensimmäisen ohjelmaversion koodin, esimerkkidatan ja testit sekä laati ja päivitti dokumentteja pyyntöjemme ja ilmoittamiemme havaintojen perusteella.
 
-Seuraavissa vaiheissa käymme muutokset yhdessä läpi, testaamme toimintaa ja teemme tarvittavat korjaukset. Tarkoituksena on jakaa työtehtäviä tasaisesti ja vaihtaa rooleja. Vielä täydennetään alkuperäinen alkuprompt, katselmointien perustelut, Aatun testihavainnot sekä toisen parin palaute ja siihen perustuva päätös.
+Seuraavissa vaiheissa käymme muutokset yhdessä läpi, testaamme toimintaa ja teemme tarvittavat korjaukset. Tarkoituksena on jakaa työtehtäviä tasaisesti ja vaihtaa rooleja. Vielä täydennetään alkuperäinen alkuprompt, katselmointien perustelut ja Aatun testihavainnot.
