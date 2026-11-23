@@ -1,5 +1,10 @@
 # AI-työskentely
 
+## Selainlaajennus 23.11.2026
+
+Pyysin lisäämään usean laitteen yhteisen optimoinnin, pilkottavan käytön, vaihtelevan tehon ja varttihinnat omaan haaraan. Halusin säilyttää ohjelman avaamisen suoraan HTML-tiedostosta ilman Pythonia tai palvelinta. Tekoäly toteutti käyttöliittymän, JavaScript-laskennan, testit ja tämän vaiheen dokumentaation pyynnöstäni. Tekoälyn ympäristössä suoritetut testit on erotettu omista ja Aatun kokeista testausdokumentissa. Tämä ei tarkoita, että olisimme jo tehneet uuden version manuaalisen katselmoinnin.
+
+
 ## Todellisuudessa käytetty alkuprompt
 
 Valitsimme projektin aiheeksi sähkön hinnan optimoinnin. Tämän jälkeen täydensimme projektikuvausta, kuten käyttäjätarvetta ja rajausta. Kun projektikuvaus ja hyväksymiskriteerit olivat valmiina, pyysin tekoälyltä apua ensimmäisen ohjelmaversion tekemiseen.

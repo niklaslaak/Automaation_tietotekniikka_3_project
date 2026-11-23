@@ -50,3 +50,31 @@ footer { border-top: 1px solid #dce5e2; padding-top: 20px; color: #53666b; font-
 [hidden] { display: none !important; }
 @media (max-width: 760px) { main { padding: 28px 16px; } .layout { grid-template-columns: 1fr; } .card { padding: 22px; } }
 @media (max-width: 380px) { .fields { grid-template-columns: 1fr; } }
+/* Monilaitteinen selainversio. */
+.card { margin-bottom: 24px; min-width: 0; }
+select, textarea { width: 100%; min-width: 0; padding: 12px; border: 1px solid #9eafaa; border-radius: 8px; color: inherit; background: white; font: inherit; }
+textarea { resize: vertical; }
+.secondary { width: auto; background: #e6f0eb; color: #185b49; border: 1px solid #b9cdc1; }
+.secondary:hover:not(:disabled) { background: #d2e3d8; }
+.device { min-width: 0; border: 1px solid #d0ded5; background: #f8faf8; border-radius: 12px; padding: 18px; margin: 20px 0; }
+.device legend { font-weight: 700; padding: 0 8px; }
+.device-fields { grid-template-columns: repeat(4,minmax(0,1fr)); margin-top: 0; }
+.check { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+.check input { width: 18px; height: 18px; flex-shrink: 0; }
+.profile-box { margin-top: 20px; }
+.capacity-field { margin-top: 28px; max-width: 500px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.actions #calculate { flex: 1; min-width: 200px; }
+#progress { color: #36594c; }
+.device-summary { border-top: 1px solid #cbdfd3; margin-top: 24px; padding-top: 12px; }
+.device-summary ul { padding-left: 22px; line-height: 1.8; }
+.table-scroll { overflow: auto; max-height: 360px; }
+table { width: 100%; border-collapse: collapse; font-size: .85rem; text-align: left; }
+th, td { padding: 10px; border-bottom: 1px solid #d9e3dc; white-space: nowrap; }
+th { background: #e7efe9; position: sticky; top: 0; }
+#chart-wrapper { overflow: visible; }
+.chart-scroll { max-width: 100%; overflow-x: auto; }
+#price-chart { width: auto; min-width: 0; max-width: none; height: 320px; }
+summary { padding: 10px 0; }
+@media(max-width:900px) { .device-fields { grid-template-columns: 1fr 1fr; } }
+@media(max-width:540px) { .device-fields, .fields { grid-template-columns: 1fr; } .device { padding: 14px; } .actions { display: block; } }
