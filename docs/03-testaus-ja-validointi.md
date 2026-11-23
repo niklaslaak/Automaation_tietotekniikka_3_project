@@ -1,5 +1,42 @@
 # Testaus ja validointi
 
+## Nykyinen selainversio – 23.11.2026
+
+Haara: `feature/selain-monilaite-vartit`. Käyttö tapahtuu avaamalla `index.html` selaimessa; Node.js tarvitaan vain kehittäjän automaattisten testien ajamiseen.
+
+AI-agentin ympäristössä (Node.js v24.22.3) komento `npm test` läpäisi **29/29 testiä**: 21 laskenta- ja validointitestiä sekä 8 käyttöliittymätestiä. Nämä eivät ole Niklaksen tai Aatun käsin tekemiä selainkokeita.
+
+| Tarkistus | Tulos |
+|---|---|
+| Alkuperäinen tuntiaineisto, 1 kW / 2 h | 0,08 €, klo 01–03 |
+| Tunti- ja varttiaineisto, osatunnit ja negatiiviset hinnat | Laskentatestit läpäisivät |
+| Yhteinen tehoraja ja usean laitteen aikataulu | Testit läpäisivät; myös tapaus, jossa laitteiden peräkkäinen ahne valinta olisi väärä |
+| Yhtenäinen ja pilkottava käyttö, järjestyksessä etenevä tehoprofiili | Testit läpäisivät, myös nollatehoinen vaihe |
+| Tarkka minimi | 40 pientä tapausta verrattiin erilliseen kaikki vaihtoehdot läpikäyvään vertailulaskentaan |
+| Tiedoston tuonti, tulokset, kuvaajan valinnat ja syötteiden muuttaminen | 8 Happy DOM -testiä läpäisi |
+| Laskennan peruminen, laskentarajat ja kilpailevat tiedostonluvut | Testit läpäisivät |
+
+Happy DOM suorittaa oikean HTML:n ja käyttöliittymäkoodin simuloidussa DOM-ympäristössä. Se ei varmista selaimen ulkoasua, CSS-asettelua tai oikeaa tiedostovalitsinta.
+
+Oikean selaimen testi on valmisteltu tiedostoon `tests/browser.cjs`. Chromiumin käynnistys tässä ympäristössä estyi virheeseen `socket() failed: Operation not permitted`; Playwrightin selainlataus palautti HTTP 403. **Oikean selaimen testistä ei siis ole hyväksyttyä tulosta tälle versiolle.** Aiemman version selainhavainnot alempana eivät vahvista tätä laajennusta.
+
+### Toistaminen
+
+Kehittäjän testit: `npm ci` ja `npm test`. Oikean selaimen automaattitesti: `npx playwright install chromium --only-shell` ja `npm run test:browser` ympäristössä, jossa Chromium voidaan asentaa ja käynnistää.
+
+Käsin Edgessä:
+
+1. Avaa `index.html`. Valitse 60 min ja tuo `data/esimerkkihinnat.csv`. Laske 1 kW / 2 h: 0,08 €, klo 01–03.
+2. Lisää toinen 1 kW / 2 h laite ja aseta yhteiseksi tehorajaksi 1 kW. Laske: laitteet käyttävät yhdessä kaikki neljä tuntia, huipputeho 1 kW ja hinta 0,30 €.
+3. Poista toinen laite. Paina **Lataa esimerkkihinnat**. Aseta 1 kW, 0,5 h ja pilkottava käyttö: valitut vartit ovat klo 00.45 ja 02.45. Tarkka kustannus on −0,0025 €; kahden desimaalin näytössä se pyöristyy arvoon −0,00 €.
+4. Ota vaihteleva teho käyttöön ja anna profiili `2; 0,5`: käyttöaika 0,5 h ja energia 0,625 kWh. Tarkista varttikohtainen teho tuloksesta.
+5. Muuta syötettä ja varmista vanhan tuloksen poistuminen. Tuo virheellinen CSV ja tarkista virheilmoitus. Kokeile myös laskennan perumista sekä kapeaa ikkunaa ja näppäimistökäyttöä.
+6. Kirjaa oma päivämäärä, selainversio ja havaitut tulokset tämän osion alle. Älä merkitse koetta läpäistyksi ennen suorittamista.
+
+## Aiemman version testihistoria
+
+Alla oleva 4.11.2026 historia koskee aiempaa tuntipohjaista yhden laitteen versiota. Sen rajaukset, testimäärät ja suoritusohjeet eivät korvaa yllä olevia nykyisen version tietoja.
+
 ## Testien suoritusohje
 
 Ensimmäisen toteutuksen lähtökohtana on päähaaraan yhdistetty määrittely (commit `1a8c4bba38afea98c695e3a815b2b10587177b4e`). Normaali testitapaus ja liian pitkän käyttöajan rajatapaus määriteltiin ennen koodia.

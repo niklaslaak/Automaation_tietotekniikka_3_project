@@ -1,289 +1,162 @@
 "use strict";
-
-// Samat puhtaat laskentafunktiot toimivat selaimessa ja Node.js-testeissä.
-const EnergyOptimizer = (() => {
-  const HOUR = 3600000;
-  const MAX_BYTES = 1000000;
-  const MAX_ROWS = 10000;
-  const decimal = /^[+-]?\d+(?:\.\d+)?$/;
-
-  function parseTime(text, line) {
-    const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):00$/.exec(text);
-    if (!match) throw new Error(`Rivi ${line}: ajan muodon pitää olla YYYY-MM-DDTHH:00.`);
-    const [, y, m, d, h] = match.map(Number);
-    // UTC toimii vain kellonaikojen laskenta-akselina. Ei paikallisia aikavyöhykemuunnoksia.
-    const date = new Date(0);
-    date.setUTCFullYear(y, m - 1, d);
-    date.setUTCHours(h, 0, 0, 0);
-    if (y < 1 || y > 9998 || date.getUTCFullYear() !== y || date.getUTCMonth() !== m - 1 || date.getUTCDate() !== d || date.getUTCHours() !== h) {
-      throw new Error(`Rivi ${line}: päivämäärä tai tunti ei ole kelvollinen (vuodet 0001–9998).`);
-    }
-    return date.getTime();
-  }
-
-  function parseCsv(text) {
-    if (new TextEncoder().encode(text).length > MAX_BYTES) throw new Error("Tiedosto on liian suuri. Enimmäiskoko on 1 Mt.");
-    const lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
-    if (lines[0]?.trim() !== "aika;hinta_snt_kwh") throw new Error("Tiedoston otsikon pitää olla aika;hinta_snt_kwh.");
-    if (lines.length < 2) throw new Error("Tiedostossa ei ole hintarivejä.");
-    if (lines.length - 1 > MAX_ROWS) throw new Error("Tiedostossa saa olla enintään 10 000 tuntia.");
-    let previous;
-    return lines.slice(1).map((line, index) => {
-      const n = index + 2;
-      const cells = line.split(";").map(cell => cell.trim());
-      if (cells.length !== 2) throw new Error(`Rivi ${n}: tarvitaan aika ja hinta puolipisteellä erotettuina.`);
-      const time = parseTime(cells[0], n);
-      const price = cells[1];
-      if (!decimal.test(price) || !Number.isFinite(Number(price))) throw new Error(`Rivi ${n}: hinnan pitää olla äärellinen luku; käytä desimaalipistettä.`);
-      if (previous !== undefined && time - previous !== HOUR) throw new Error(`Rivi ${n}: tuntien pitää olla peräkkäisiä ja aikajärjestyksessä, ilman päällekkäisiä tunteja.`);
-      previous = time;
-      return { time, price };
-    });
-  }
-
-  function validateInputs(powerText, durationText, count) {
-    const powerValue = String(powerText).trim().replace(",", ".");
-    const durationValue = String(durationText).trim();
-    const power = Number(powerValue);
-    const duration = Number(durationValue);
-    if (!decimal.test(powerValue) || !Number.isFinite(power) || power <= 0) throw new Error("Anna laitteen tehoksi positiivinen luku kilowatteina.");
-    if (!/^\d+$/.test(durationValue) || !Number.isSafeInteger(duration) || duration <= 0) throw new Error("Anna käyttöajaksi positiivinen kokonaislukumäärä tunteja.");
-    if (!count) throw new Error("Lataa ensin kelvollinen hintatiedosto.");
-    if (duration > count) throw new Error(`Käyttöaika (${duration} h) ylittää aineiston pituuden (${count} h).`);
-    return { power, duration };
-  }
-
-  function optimize(rows, powerText, durationText) {
-    const { power, duration } = validateInputs(powerText, durationText, rows.length);
-    // Hinnat muutetaan saman tarkkuuden kokonaisluvuiksi. Näin esimerkiksi
-    // 0.1 + 0.2 ja 0.3 tunnistetaan aidosti yhtä suuriksi ennen pyöristystä.
-    const scale = rows.reduce((max, row) => Math.max(max, (row.price.split(".")[1] || "").length), 0);
-    const prices = rows.map(row => {
-      const [whole, fraction = ""] = row.price.split(".");
-      return BigInt(whole + fraction.padEnd(scale, "0"));
-    });
-    let sum = prices.slice(0, duration).reduce((a, b) => a + b, 0n);
-    let bestSum = sum;
-    let bestIndex = 0;
-    // Liukuva summa: jokaisessa siirrossa yksi tunti poistuu ja yksi tulee tilalle.
-    for (let i = duration; i < prices.length; i++) {
-      sum += prices[i] - prices[i - duration];
-      if (sum < bestSum) {
-        bestSum = sum;
-        bestIndex = i - duration + 1;
-      }
-    }
-    const negative = bestSum < 0n;
-    const digits = (negative ? -bestSum : bestSum).toString().padStart(scale + 1, "0");
-    // Sentit euroiksi samalla desimaalisiirrolla; ei välituloksen ylivuotoa.
-    const euroDigits = digits.padStart(scale + 3, "0");
-    const euros = Number(`${negative ? "-" : ""}${euroDigits.slice(0, -scale - 2)}.${euroDigits.slice(-scale - 2)}`);
-    const cost = euros * power;
-    const energy = power * duration;
-    if (!Number.isFinite(cost) || !Number.isFinite(energy)) throw new Error("Arvot ovat liian suuria kustannuksen tai energiankulutuksen laskentaan.");
-    return { start: rows[bestIndex].time, end: rows[bestIndex + duration - 1].time + HOUR, cost, energy, power, duration };
-  }
-
-  function formatTime(time) {
-    const date = new Date(time);
-    const pad = n => String(n).padStart(2, "0");
-    return `${pad(date.getUTCDate())}.${pad(date.getUTCMonth() + 1)}.${String(date.getUTCFullYear()).padStart(4, "0")} klo ${pad(date.getUTCHours())}:00`;
-  }
-  return { parseCsv, validateInputs, optimize, formatTime, MAX_BYTES };
-})();
-
-if (typeof module !== "undefined" && module.exports) module.exports = EnergyOptimizer;
-
-if (typeof document !== "undefined") {
+(() => {
   const get = id => document.getElementById(id);
-  const form = get("optimizer");
-  const fileInput = get("prices");
-  const power = get("power");
-  const duration = get("duration");
-  let rows = [];
-  let loadVersion = 0;
-  const number = new Intl.NumberFormat("fi-FI", { maximumFractionDigits: 6 });
-  const currency = new Intl.NumberFormat("fi-FI", { style: "currency", currency: "EUR" });
-
-  function svgElement(name, attributes = {}) {
-    if (typeof document.createElementNS !== "function") return null;
-    const element = document.createElementNS("http://www.w3.org/2000/svg", name);
-    Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
-    return element;
+  const number = new Intl.NumberFormat('fi-FI', {maximumFractionDigits:6});
+  const currency = new Intl.NumberFormat('fi-FI', {style:'currency',currency:'EUR'});
+  let rows=[], loadVersion=0, calculationVersion=0, serial=0, busy=false;
+  function el(tag,text,className) {
+    const node=document.createElement(tag);
+    if(text!==undefined)node.textContent=text;
+    if(className)node.className=className;
+    return node;
   }
-
-  function drawChart(chartRows, result = null) {
-    const chart = get("price-chart");
-    const wrapper = get("chart-wrapper");
-    const empty = get("chart-empty");
-    if (!chart || typeof chart.replaceChildren !== "function") return;
-
-    if (!chartRows.length) {
-      chart.replaceChildren();
-      wrapper.hidden = true;
-      empty.hidden = false;
-      return;
-    }
-
-    wrapper.hidden = false;
-    empty.hidden = true;
-    chart.replaceChildren();
-
-    const prices = chartRows.map(row => Number(row.price));
-    let minimum = Math.min(0, ...prices);
-    let maximum = Math.max(0, ...prices);
-    if (minimum === maximum) {
-      minimum -= 1;
-      maximum += 1;
-    } else {
-      const padding = (maximum - minimum) * 0.08;
-      minimum -= padding;
-      maximum += padding;
-    }
-
-    const width = 800;
-    const height = 320;
-    const left = 54;
-    const right = 16;
-    const top = 18;
-    const bottom = 46;
-    const plotWidth = width - left - right;
-    const plotHeight = height - top - bottom;
-    const x = index => left + (index + 0.5) * plotWidth / chartRows.length;
-    const y = price => top + (maximum - price) * plotHeight / (maximum - minimum);
-    const bandWidth = plotWidth / chartRows.length;
-    const barWidth = Math.max(1, Math.min(18, bandWidth * 0.72));
-
-    const zeroY = y(0);
-    for (let i = 0; i <= 4; i++) {
-      const value = maximum - (maximum - minimum) * i / 4;
-      const gridY = y(value);
-      const grid = svgElement("line", {x1:left, y1:gridY, x2:width-right, y2:gridY, class:"chart-grid"});
-      const label = svgElement("text", {x:left-8, y:gridY+4, "text-anchor":"end", class:"chart-axis-label"});
-      if (grid) chart.appendChild(grid);
-      if (label) {
-        label.textContent = `${number.format(value)} `;
-        chart.appendChild(label);
-      }
-    }
-
-    const zeroLine = svgElement("line", {x1:left, y1:zeroY, x2:width-right, y2:zeroY, class:"chart-zero"});
-    if (zeroLine) chart.appendChild(zeroLine);
-
-    let selectedStart = -1;
-    let selectedEnd = -1;
-    if (result) {
-      selectedStart = chartRows.findIndex(row => row.time === result.start);
-      selectedEnd = selectedStart >= 0 ? selectedStart + result.duration - 1 : -1;
-    }
-
-    prices.forEach((price, index) => {
-      const barTop = price >= 0 ? y(price) : zeroY;
-      const barBottom = price >= 0 ? zeroY : y(price);
-      const selected = index >= selectedStart && index <= selectedEnd;
-      const rect = svgElement("rect", {
-        x:x(index)-barWidth/2,
-        y:barTop,
-        width:barWidth,
-        height:Math.max(1, barBottom-barTop),
-        rx:Math.min(3, barWidth/4),
-        class:`chart-bar${selected ? " selected" : ""}`
-      });
-      if (!rect) return;
-      const title = svgElement("title");
-      if (title) {
-        title.textContent = `${formatChartTime(chartRows[index].time)}: ${number.format(price)} snt/kWh${selected ? " — valittu jakso" : ""}`;
-        rect.appendChild(title);
-      }
-      chart.appendChild(rect);
-    });
-
-    const labelIndexes = chartRows.length <= 8
-      ? chartRows.map((_, index) => index)
-      : [0, Math.floor((chartRows.length-1)/2), chartRows.length-1];
-    labelIndexes.forEach(index => {
-      const label = svgElement("text", {
-        x:x(index),
-        y:height-18,
-        "text-anchor":"middle",
-        class:"chart-axis-label"
-      });
-      if (label) {
-        label.textContent = formatChartTime(chartRows[index].time);
-        chart.appendChild(label);
-      }
-    });
-
-    const unit = svgElement("text", {x:left, y:10, class:"chart-axis-label"});
-    if (unit) {
-      unit.textContent = "snt/kWh";
-      chart.appendChild(unit);
-    }
+  function syncButtons() {
+    get('calculate').disabled=!rows.length||busy;
+    get('cancel').hidden=!busy;
+    get('add-device').disabled=get('devices').children.length>=MultiOptimizer.MAX_DEVICES;
   }
-
-  function formatChartTime(time) {
-    const date = new Date(time);
-    const pad = value => String(value).padStart(2, "0");
-    return `${pad(date.getUTCDate())}.${pad(date.getUTCMonth()+1)}. ${pad(date.getUTCHours())}:00`;
-  }
-
   function clearResult() {
-    get("result").hidden = true;
-    get("empty-result").hidden = false;
-    get("error").hidden = true;
-    get("error").textContent = "";
-    drawChart(rows);
+    calculationVersion++; busy=false;
+    get('result').hidden=true;get('device-results').hidden=true;get('schedules').replaceChildren();
+    get('empty-result').hidden=false;get('error').hidden=true;get('error').textContent='';
+    get('progress').hidden=true;get('progress').textContent='';
+    syncButtons();markChart(null);
   }
-  function showError(message) {
-    get("error").textContent = message;
-    get("error").hidden = false;
+  function showError(message) {get('error').textContent=message;get('error').hidden=false;}
+  function field(parent,title,className,value) {
+    const box=el('div'),id=`device-${serial}-${className}`;
+    const label=el('label',title);label.htmlFor=id;
+    const input=el('input');input.id=id;input.className=className;input.type='text';input.value=value;
+    if(['power','duration'].includes(className))input.inputMode='decimal';
+    if(className==='name')input.maxLength=60;
+    box.append(label,input);parent.append(box);return input;
   }
-  [power, duration].forEach(input => input.addEventListener("input", clearResult));
-
-  fileInput.addEventListener("change", async () => {
-    const version = ++loadVersion;
-    rows = [];
-    clearResult();
-    get("calculate").disabled = true;
-    const file = fileInput.files[0];
-    if (!file) {
-      get("file-status").textContent = "Hintatiedostoa ei ole vielä ladattu.";
-      return;
+  function addDevice() {
+    if(get('devices').children.length>=MultiOptimizer.MAX_DEVICES)return;
+    serial++;
+    const card=el('fieldset',undefined,'device');card.append(el('legend',`Laite ${serial}`));
+    const fields=el('div',undefined,'fields device-fields');
+    field(fields,'Laitteen nimi','name',`Laite ${serial}`);
+    const power=field(fields,'Vakioteho (kW)','power','1');
+    const duration=field(fields,'Käyttöaika (h)','duration','2');
+    const modeBox=el('div'),label=el('label','Käyttötapa'),mode=el('select');
+    mode.className='mode';mode.id=`device-${serial}-mode`;label.htmlFor=mode.id;
+    for(const [value,text] of [['continuous','Yhtenäinen jakso'],['split','Saa pilkkoa vartteihin']]){
+      const option=el('option',text);option.value=value;mode.append(option);
     }
-    get("file-status").textContent = "Luetaan hintatiedostoa…";
-    try {
-      if (file.size > EnergyOptimizer.MAX_BYTES) throw new Error("Tiedosto on liian suuri. Enimmäiskoko on 1 Mt.");
-      const text = await file.text();
-      // Hitaasti valmistuva aiempi lataus ei saa korvata uudempaa valintaa.
-      if (version !== loadVersion) return;
-      rows = EnergyOptimizer.parseCsv(text);
-      get("file-status").textContent = `${file.name}: ladattu ${rows.length} tuntia.`;
-      get("calculate").disabled = false;
-      drawChart(rows);
-    } catch (error) {
-      if (version !== loadVersion) return;
-      rows = [];
-      get("file-status").textContent = "Hintatiedostoa ei hyväksytty.";
-      showError(error.message || "Tiedoston lukeminen epäonnistui.");
+    modeBox.append(label,mode);fields.append(modeBox);card.append(fields);
+    card.append(el('p','Käyttöaika esimerkiksi 0,25 h = 15 min, 0,5 h = 30 min tai 1,5 h = 90 min.','hint'));
+    const checkLabel=el('label',undefined,'check'),check=el('input');check.type='checkbox';check.className='use-profile';
+    checkLabel.append(check,document.createTextNode('Laitteen teho vaihtelee käytön aikana'));
+    const profileBox=el('div',undefined,'profile-box');profileBox.hidden=true;
+    const profileLabel=el('label','Tehot per vartti (kW; erota puolipisteillä)'),profile=el('textarea');
+    profile.className='profile';profile.id=`device-${serial}-profile`;profile.rows=2;profile.value='2; 2; 0,5; 0,5';profileLabel.htmlFor=profile.id;
+    profileBox.append(profileLabel,profile,el('p','Jokainen arvo kestää 15 minuuttia. Esimerkissä 30 min teholla 2 kW ja 30 min teholla 0,5 kW. Profiili korvaa vakiotehon ja käyttöajan. Vaiheiden järjestys säilyy myös pilkottaessa.','hint'));
+    check.addEventListener('change',()=>{profileBox.hidden=!check.checked;power.disabled=check.checked;duration.disabled=check.checked;clearResult();});
+    const remove=el('button','Poista laite','secondary remove-device');remove.type='button';
+    remove.addEventListener('click',()=>{card.remove();clearResult();});
+    card.append(checkLabel,profileBox,remove);card.addEventListener('input',clearResult);
+    get('devices').append(card);clearResult();
+  }
+  function readDevices() {
+    return [...get('devices').children].map(card=>{
+      const data={name:card.querySelector('.name').value,mode:card.querySelector('.mode').value};
+      if(card.querySelector('.use-profile').checked){
+        data.profile=card.querySelector('.profile').value.trim();
+        if(!data.profile)throw new Error(`${data.name}: anna tehoprofiili.`);
+      }else{data.power=card.querySelector('.power').value;data.hours=card.querySelector('.duration').value;}
+      return data;
+    });
+  }
+  function svg(name,attributes={}) {
+    const node=document.createElementNS('http://www.w3.org/2000/svg',name);
+    Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,value));return node;
+  }
+  function drawChart() {
+    const chart=get('price-chart');chart.replaceChildren();get('price-table').replaceChildren();
+    get('chart-wrapper').hidden=!rows.length;get('chart-empty').hidden=Boolean(rows.length);
+    if(!rows.length)return;
+    const prices=rows.map(row=>Number(row.price)),minimum=Math.min(0,...prices),maximum=Math.max(0,...prices);
+    const range=Math.max(maximum-minimum,.000001),low=minimum-range*.08,high=maximum+range*.08;
+    const width=Math.max(800,rows.length*14+144),height=320,left=104,right=40,top=25,bottom=55;
+    const band=(width-left-right)/rows.length,y=p=>top+(high-p)/(high-low)*(height-top-bottom),x=i=>left+(i+.5)*band;
+    chart.setAttribute('viewBox',`0 0 ${width} ${height}`);chart.setAttribute('width',width);chart.setAttribute('height',height);
+    for(const value of [...new Set([minimum,0,maximum])]){
+      chart.append(svg('line',{x1:left,x2:width-right,y1:y(value),y2:y(value),class:value===0?'chart-zero':'chart-grid'}));
+      const label=svg('text',{x:left-8,y:y(value)+4,'text-anchor':'end',class:'chart-axis-label'});label.textContent=number.format(value);chart.append(label);
+    }
+    const unit=svg('text',{x:left,y:14,class:'chart-axis-label'});unit.textContent='snt/kWh';chart.append(unit);
+    rows.forEach((row,i)=>{
+      const price=Number(row.price),barWidth=Math.min(24,band*.72);
+      const bar=svg('rect',{x:x(i)-barWidth/2,y:Math.min(y(price),y(0)),width:barWidth,height:Math.max(1,Math.abs(y(price)-y(0))),class:'chart-bar'});
+      const title=svg('title');title.textContent=`${MultiOptimizer.formatTime(row.time)}: ${number.format(price)} snt/kWh`;bar.append(title);chart.append(bar);
+      const tr=el('tr');tr.append(el('td',MultiOptimizer.formatTime(row.time)),el('td',number.format(price)),el('td','—'));get('price-table').append(tr);
+    });
+    const labels=new Set([0,rows.length-1]);for(let i=16;i<rows.length-8;i+=16)labels.add(i);
+    labels.forEach(i=>{
+      const label=svg('text',{x:x(i),y:height-20,'text-anchor':i===0?'start':i===rows.length-1?'end':'middle',class:'chart-axis-label'});
+      label.textContent=MultiOptimizer.formatTime(rows[i].time);chart.append(label);
+    });
+  }
+  function markChart(result) {
+    const selected=new Set(result?.devices.flatMap(d=>d.slots.map(s=>s.index))??[]);
+    get('price-chart').querySelectorAll('.chart-bar').forEach((bar,i)=>bar.classList.toggle('selected',selected.has(i)));
+    [...get('price-table').children].forEach((row,i)=>{row.lastElementChild.textContent=result?number.format(result.load[i]):'—';});
+  }
+  function acceptCsv(text,interval,name) {
+    rows=MultiOptimizer.parseCsv(text,interval);
+    get('file-status').textContent=`${name}: ladattu ${number.format(rows.length/4)} tuntia (${rows.length} varttia).`;
+    drawChart();syncButtons();
+  }
+  function resetPrices() {
+    loadVersion++;rows=[];clearResult();drawChart();get('file-status').textContent='Hintatiedostoa ei ole vielä ladattu.';
+  }
+  get('interval').addEventListener('change',()=>{resetPrices();get('prices').value='';get('file-status').textContent='Hintajakso vaihtui. Valitse tiedosto uudelleen.';});
+  get('prices').addEventListener('change',async()=>{
+    resetPrices();const version=loadVersion,file=get('prices').files[0];if(!file)return;
+    const interval=Number(get('interval').value);get('file-status').textContent='Luetaan hintatiedostoa…';
+    try{
+      if(file.size>MultiOptimizer.MAX_BYTES)throw new Error('Tiedoston enimmäiskoko on 1 Mt.');
+      const text=await file.text();if(version!==loadVersion)return;acceptCsv(text,interval,file.name);
+    }catch(error){
+      if(version!==loadVersion)return;rows=[];drawChart();syncButtons();get('file-status').textContent='Hintatiedostoa ei hyväksytty.';showError(error.message||'Tiedoston lukeminen epäonnistui.');
     }
   });
-
-  form.addEventListener("submit", event => {
-    event.preventDefault();
-    clearResult();
-    try {
-      const result = EnergyOptimizer.optimize(rows, power.value, duration.value);
-      get("start").textContent = EnergyOptimizer.formatTime(result.start);
-      get("end").textContent = EnergyOptimizer.formatTime(result.end);
-      get("cost").textContent = currency.format(result.cost);
-      get("energy").textContent = `${number.format(result.energy)} kWh`;
-      get("result-power").textContent = `${number.format(result.power)} kW`;
-      get("result-duration").textContent = `${result.duration} h`;
-      get("empty-result").hidden = true;
-      get("result").hidden = false;
-      drawChart(rows, result);
-    } catch (error) {
-      showError(error.message);
-    }
+  get('example').addEventListener('click',()=>{
+    resetPrices();get('prices').value='';get('interval').value='15';
+    const prices=[10,5,12,-2,9,2,10,7,4,3,8,1,12,6,5,9];
+    const csv='aika;hinta_snt_kwh\n'+prices.map((p,i)=>`2026-11-04T${String(Math.floor(i/4)).padStart(2,'0')}:${String(i%4*15).padStart(2,'0')};${p}`).join('\n');
+    acceptCsv(csv,15,'Synteettinen varttiesimerkki');
   });
-}
+  get('add-device').addEventListener('click',addDevice);get('capacity').addEventListener('input',clearResult);
+  get('cancel').addEventListener('click',()=>{clearResult();get('empty-result').textContent='Laskenta peruttu. Voit muuttaa syötteitä ja laskea uudelleen.';});
+  function showResult(result) {
+    get('cost').textContent=currency.format(result.cost);
+    get('start').textContent=MultiOptimizer.formatTime(Math.min(...result.devices.map(d=>d.start)));
+    get('end').textContent=MultiOptimizer.formatTime(Math.max(...result.devices.map(d=>d.end)));
+    get('energy').textContent=`${number.format(result.energy)} kWh`;
+    get('peak').textContent=`${number.format(result.peak)} / ${number.format(result.capacity)} kW`;
+    for(const d of result.devices){
+      const section=el('section',undefined,'device-summary');section.append(el('h3',d.name),el('p',`${currency.format(d.cost)} · ${number.format(d.energy)} kWh · ${number.format(d.hours)} h käyttöä`));
+      const list=el('ul');for(const p of d.periods)list.append(el('li',`${MultiOptimizer.formatTime(p.start)} – ${MultiOptimizer.formatTime(p.end)}`));section.append(list);
+      const details=el('details'),wrap=el('div',undefined,'table-scroll'),table=el('table'),head=el('thead'),heading=el('tr');
+      for(const title of ['Vartin alku','Teho (kW)']){const th=el('th',title);th.scope='col';heading.append(th);}head.append(heading);table.append(head);
+      const body=el('tbody');for(const s of d.slots){const tr=el('tr');tr.append(el('td',MultiOptimizer.formatTime(s.time)),el('td',number.format(s.power)));body.append(tr);}
+      table.append(body);wrap.append(table);details.append(el('summary','Varttikohtaiset tehot'),wrap);section.append(details);get('schedules').append(section);
+    }
+    get('empty-result').hidden=true;get('result').hidden=false;get('device-results').hidden=false;markChart(result);
+  }
+  get('optimizer').addEventListener('submit',async event=>{
+    event.preventDefault();clearResult();const version=calculationVersion;
+    try{
+      const devices=readDevices();busy=true;syncButtons();get('progress').hidden=false;get('progress').textContent='Lasketaan yhteistä aikataulua…';
+      const result=await MultiOptimizer.optimizeAsync(rows,devices,get('capacity').value,{
+        cancelled:()=>calculationVersion!==version,
+        onProgress:step=>{if(version===calculationVersion)get('progress').textContent=`Lasketaan: vartti ${step.slot}/${step.slots}. Voit perua laskennan.`;}
+      });
+      if(version===calculationVersion)showResult(result);
+    }catch(error){if(version===calculationVersion&&error.name!=='AbortError')showError(error.message);}
+    finally{if(version===calculationVersion){busy=false;get('progress').hidden=true;syncButtons();}}
+  });
+  addDevice();
+})();

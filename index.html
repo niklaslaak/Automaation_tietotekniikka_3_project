@@ -1,77 +1,22 @@
 <!doctype html>
 <html lang="fi">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sähkönkäytön ajoitusoptimointi</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
-</head>
-<body>
-  <main>
-    <header>
-      <p class="eyebrow">SÄHKÖN KÄYTTÖ • ENSIMMÄINEN VERSIO</p>
-      <h1>Löydä edullisin käyttöaika.</h1>
-      <p class="intro">Tuo tuntihinnat, kerro laitteen teho ja käyttöaika. Laske halvin yhtenäinen jakso aineistostasi.</p>
-    </header>
-    <div class="layout">
-      <section class="card" aria-labelledby="settings-title">
-        <h2 id="settings-title">1. Hinnat ja laite</h2>
-        <form id="optimizer" novalidate>
-          <label for="prices">Hintatiedosto (CSV)</label>
-          <input id="prices" type="file" accept=".csv,text/csv" aria-describedby="file-help file-status">
-          <p id="file-help" class="hint">Valitse esimerkiksi projektin <strong>data/esimerkkihinnat.csv</strong>. Tiedosto käsitellään vain tässä selaimessa.</p>
-          <p id="file-status" role="status">Hintatiedostoa ei ole vielä ladattu.</p>
-          <div class="fields">
-            <div><label for="power">Laitteen teho (kW)</label><input id="power" type="text" inputmode="decimal" value="1" aria-describedby="power-help"><p id="power-help" class="hint">Esimerkiksi 1,5 kW = 1 500 W.</p></div>
-            <div><label for="duration">Käyttöaika (h)</label><input id="duration" type="text" inputmode="numeric" value="2" aria-describedby="duration-help"><p id="duration-help" class="hint">Kokonaisia tunteja, keskeytyksettä.</p></div>
-          </div>
-          <button id="calculate" type="submit" disabled>Etsi halvin jakso</button>
-          <p id="error" role="alert" hidden></p>
-        </form>
-      </section>
-      <section class="card result-card" aria-labelledby="result-title">
-        <h2 id="result-title">2. Suositeltu käyttöjakso</h2>
-        <div id="result-announcement" aria-live="polite" aria-atomic="true">
-          <p id="empty-result">Lataa hinnat ja laske suositus. Tulos ilmestyy tähän.</p>
-          <div id="result" hidden>
-            <p class="eyebrow">ENERGIAKUSTANNUS</p>
-            <p id="cost" class="cost"></p>
-            <dl>
-              <div><dt>Aloitus</dt><dd id="start"></dd></div>
-              <div><dt>Lopetus</dt><dd id="end"></dd></div>
-              <div><dt>Käyttöaika</dt><dd id="result-duration"></dd></div>
-              <div><dt>Teho</dt><dd id="result-power"></dd></div>
-              <div><dt>Energiankulutus</dt><dd id="energy"></dd></div>
-            </dl>
-            <p class="hint">Tasahintaisista jaksoista valitaan aikaisin. Hinnat voivat olla myös negatiivisia.</p>
-          </div>
-        </div>
-      </section>
-    </div>
-    <section class="card chart-card" aria-labelledby="chart-title">
-      <h2 id="chart-title">Hintakuvaaja</h2>
-      <div id="chart-empty">Ladataksesi hintojen kuvaajan valitse CSV-tiedosto.</div>
-      <div id="chart-wrapper" hidden>
-        <svg id="price-chart" role="img" aria-label="Tuntikohtaisten sähkönhintojen kuvaaja" viewBox="0 0 800 320"></svg>
-        <div class="chart-legend" aria-label="Kuvaajan selite">
-          <span><i class="legend-bar"></i> Tuntihinta (snt/kWh)</span>
-          <span><i class="legend-selected"></i> Valittu käyttöjakso</span>
-        </div>
-      </div>
-    </section>
-    <section class="notes" aria-labelledby="notes-title">
-      <h2 id="notes-title">Mitä arvio sisältää?</h2>
-      <p>Laskenta olettaa, että laite käyttää samaa tehoa koko jakson ajan. Hinnat käytetään tiedostosta sellaisinaan: arvonlisäveroa, siirtoa, sähköveroa, marginaalia tai perusmaksuja ei lisätä. Tulos ei ole koko sähkölaskun arvio.</p>
-      <details><summary>Hintatiedoston muoto ja rajaukset</summary>
-        <p>UTF-8, puolipiste-erotin ja hinnan desimaalierottimena piste. Jokainen rivi alkaa tunnin alkamisajalla; tunnit ovat peräkkäisiä ja aikajärjestyksessä. Enintään 10 000 tuntia ja 1 Mt. Mukana tulevat hinnat ovat keksittyä testidataa.</p>
-        <pre>aika;hinta_snt_kwh
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sähkönkäytön ajoitusoptimointi</title><link rel="stylesheet" href="style.css"><script src="scheduler.js" defer></script><script src="script.js" defer></script></head>
+<body><main>
+<header><p class="eyebrow">SÄHKÖN KÄYTTÖ · VARTIT JA USEAT LAITTEET</p><h1>Löydä edullisin käyttöaika.</h1><p class="intro">Tuo hinnat, lisää laitteet ja laske yhteinen aikataulu. Kaikki toimii paikallisesti tässä selaimessa.</p></header>
+<form id="optimizer" novalidate>
+<section class="card"><h2>1. Hintatiedot</h2>
+<div class="fields"><div><label for="interval">CSV:n yhden hintarivin kesto</label><select id="interval"><option value="60">60 minuuttia — tuntihinnat</option><option value="15">15 minuuttia — varttihinnat</option></select></div><div><label for="prices">Hintatiedosto (CSV)</label><input id="prices" type="file" accept=".csv,text/csv"></div></div>
+<p class="hint">Tuntihinta jaetaan neljälle samanhintaiselle vartille. Myös tuntiaineistolla käyttöaika voi olla esimerkiksi 0,5 h. Valitse tiedostoa vastaava hintarivin kesto ennen tuontia.</p>
+<button id="example" type="button" class="secondary">Lataa esimerkkihinnat</button><p id="file-status" role="status">Hintatiedostoa ei ole vielä ladattu.</p>
+</section>
+<section class="card devices-card"><h2>2. Laitteet ja käyttöajat</h2><p class="hint">Lisää enintään neljä laitetta. Pilkottava käyttö voi sisältää taukoja: valitse se vain laitteelle, jonka käytön voi keskeyttää.</p><div id="devices"></div><button id="add-device" type="button" class="secondary">+ Lisää laite</button>
+<div class="capacity-field"><label for="capacity">Laitteiden yhteinen tehoraja (kW)</label><input id="capacity" type="text" inputmode="decimal" value="3"><p class="hint">Lisättyjen laitteiden yhteisteho ei saa ylittää rajaa. Talon muu kulutus ei sisälly laskentaan.</p></div>
+<div class="actions"><button id="calculate" type="submit" disabled>Laske halvin yhteinen aikataulu</button><button id="cancel" type="button" class="secondary" hidden>Peru laskenta</button></div><p id="progress" role="status" hidden></p><p id="error" role="alert" hidden></p></section>
+</form>
+<section class="card result-card"><h2>3. Yhteinen käyttösuunnitelma</h2><div aria-live="polite" aria-atomic="true"><p id="empty-result">Lataa hinnat, lisää laitteet ja laske aikataulu.</p><div id="result" hidden><p class="eyebrow">LAITTEIDEN ENERGIAKUSTANNUS YHTEENSÄ</p><p id="cost" class="cost"></p><dl><div><dt>Ensimmäinen aloitus</dt><dd id="start"></dd></div><div><dt>Viimeinen lopetus</dt><dd id="end"></dd></div><div><dt>Energiankulutus yhteensä</dt><dd id="energy"></dd></div><div><dt>Suurin yhteisteho</dt><dd id="peak"></dd></div></dl><p class="hint">Halvin yhteinen aikataulu annetuilla tiedoilla ja tehorajalla. Negatiivinen kustannus on mahdollinen.</p></div></div><div id="device-results" hidden><h3>Laitteiden käyttöjaksot</h3><div id="schedules"></div></div></section>
+<section class="card chart-card"><h2>Hintakuvaaja</h2><div id="chart-empty">Lataa hintatiedosto nähdäksesi hinnat.</div><div id="chart-wrapper" hidden><div class="chart-scroll" tabindex="0" aria-label="Vieritettävä hintakuvaaja"><svg id="price-chart" role="img" aria-label="Varttikohtaiset hinnat. Samat tiedot ovat taulukossa."></svg></div><div class="chart-legend"><span><i class="legend-bar"></i> Vartin hinta (snt/kWh)</span><span><i class="legend-selected"></i> Vähintään yksi laite käytössä</span></div><details><summary>Hinnat ja yhteisteho taulukkona</summary><div class="table-scroll"><table><thead><tr><th scope="col">Vartin alku</th><th scope="col">Hinta snt/kWh</th><th scope="col">Laitteiden teho kW</th></tr></thead><tbody id="price-table"></tbody></table></div></details></div></section>
+<section class="notes"><h2>Mitä arvio sisältää?</h2><p>Ohjelma ajoittaa laitteiden käytön 15 minuutin tarkkuudella. Hinnat käytetään tiedostosta sellaisinaan: siirtoa, sähköveroa, marginaalia tai perusmaksuja ei lisätä. Ohjelma ei ohjaa oikeita laitteita.</p><details><summary>Hintatiedoston muoto ja laskennan rajat</summary><p>UTF-8, puolipiste-erotin, hinnassa desimaalipiste. Otsikko: <strong>aika;hinta_snt_kwh</strong>. Aikaleima on hintajakson alku. Valitse 15 tai 60 minuuttia; jaksojen pitää olla peräkkäisiä. Enintään 96 tuntia (384 varttia) ja 1 Mt.</p><pre>aika;hinta_snt_kwh
 2026-11-04T00:00;10
-2026-11-04T01:00;5</pre>
-        <p>Aineiston kellonajat näytetään sellaisinaan ilman aikavyöhykemuunnoksia. Varttihinnat ja kellonsiirtopäivät eivät kuulu tähän versioon. Tiedot poistuvat, kun sivu ladataan uudelleen.</p>
-      </details>
-    </section>
-    <footer>Automaation tietotekniikka 3 · Kurssiprojekti</footer>
-  </main>
-</body>
-</html>
+2026-11-04T00:15;5</pre><p>Teho ja tehoraja: enintään 1 000 kW, kolme desimaalia. Hinta: itseisarvo enintään 100 000 snt/kWh, kuusi desimaalia. Käyttöajat ovat 0,25 tunnin monikertoja. Jos yhteislaskenta on liian laaja selaimelle, ohjelma pyytää pienentämään tehtävää eikä esitä keskeneräistä tulosta halvimpana.</p><p>Aikaleimat näytetään sellaisinaan ilman aikavyöhykemuunnoksia. Kellonsiirtopäiviä ei käsitellä. Tietoja ei lähetetä verkkoon. Sivun uudelleenlataus poistaa hinnat, laitteet ja tulokset. Mukana tulevat esimerkkihinnat ovat synteettisiä.</p></details></section>
+<footer>Automaation tietotekniikka 3 · Niklas Laak ja Aatu Lepola</footer>
+</main></body></html>
