@@ -2,6 +2,10 @@
 
 Projektin nimi: **Sähkönkäytön ajoitusoptimointi**
 
+## Laajennettu versio V2, 18.11.2026
+
+Halusin kokeilla alkuperäisestä versiosta pois rajattuja ominaisuuksia omassa työhaarassa, jotta Aatu voi jatkaa omaa työtään samalla. Valitsin omalla koneella toimivan sovelluksen ja laiteohjauksen simulaation. V2:n laajuus, rajat ja hyväksymiskokeet on kuvattu [V2:n määrittelyssä](../v2/README.md). Alla oleva V1–V6-määrittely koskee edelleen alkuperäistä versiota; V2 ei korvaa sitä ennen yhteistä katselmointia. Oikeita sähkölaitteita ei ohjata tässä versiossa.
+
 ## Käyttäjä, ongelma ja arvolupaus
 
 Kohdekäyttäjä on kuvitteellinen pörssisähköä käyttävä kotitalouden asukas, joka pystyy siirtämään jonkin sähkölaitteen käyttöä päivän sisällä. Hän haluaa selvittää, milloin laitetta kannattaa käyttää, mutta hintataulukosta on työlästä vertailla usean tunnin jaksoja käsin.
