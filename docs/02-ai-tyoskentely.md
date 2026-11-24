@@ -1,8 +1,9 @@
 # AI-työskentely
 
-## V2-laajennus 18.11.2026
+## Selainlaajennus 23.11.2026
 
-Pyysin tekoälyä tekemään laajennetun version omaan haaraan, jotta Aatu voi muokata omia tiedostojaan rinnakkain. Valitsin paikallisen sovelluksen ja simulaation oikean laiteohjauksen sijasta. Tekoäly toteutti V2:n koodin, testit ja käyttöohjeen näiden valintojen pohjalta. Tämän vaiheen testit, rajoitukset ja vielä tehtävät omat kokeet näkyvät [V2:n testausraportissa](../v2/TESTAUS.md). Omaa tai Aatun uutta V2-selainkoetta ei ole vielä kirjattu suoritetuksi.
+Pyysin lisäämään usean laitteen yhteisen optimoinnin, pilkottavan käytön, vaihtelevan tehon ja varttihinnat omaan haaraan. Halusin säilyttää ohjelman avaamisen suoraan HTML-tiedostosta ilman Pythonia tai palvelinta. Tekoäly toteutti käyttöliittymän, JavaScript-laskennan, testit ja tämän vaiheen dokumentaation pyynnöstäni. Tekoälyn ympäristössä suoritetut testit on erotettu omista ja Aatun kokeista testausdokumentissa. Tämä ei tarkoita, että olisimme jo tehneet uuden version manuaalisen katselmoinnin.
+
 
 ## Todellisuudessa käytetty alkuprompt
 
